@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   philo_one.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:43:16 by sqatim            #+#    #+#             */
-/*   Updated: 2021/04/23 02:34:51 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/04/23 17:51:47 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_one.h"
+#include <sys/errno.h>
 
+int k = 0;
 void print_error(int error)
 {
     char *str;
@@ -71,17 +73,16 @@ t_philosopher get_args(int ac, char **av)
     int i;
 
     i = 0;
-    pthread_mutex_init(&philo.mutex, NULL);
+
+    philo.forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * philo.number_of_philosopher);
+    while (i < philo.number_of_philosopher)
+        pthread_mutex_init(&philo.forks[i++], NULL);
     philo.number_of_philosopher = ft_atoi(av[1]);
     philo.i = 0;
     philo.thread = (pthread_t *)malloc(sizeof(pthread_t) * philo.number_of_philosopher);
-    philo.forks = (int *)malloc(sizeof(int) * philo.number_of_philosopher);
     philo.state = (int *)malloc(sizeof(int) * philo.number_of_philosopher);
     while (i < philo.number_of_philosopher)
-    {
-        philo.forks[i] = 0;
         philo.state[i++] = HUNGER;
-    }
     philo.time_to_die = ft_atoi(av[2]);
     philo.time_to_eat = ft_atoi(av[3]);
     philo.time_to_sleep = ft_atoi(av[4]);
@@ -90,22 +91,31 @@ t_philosopher get_args(int ac, char **av)
     return (philo);
 }
 
-void take_fork_right(t_philosopher *philo, int philosopher)
+void take_fork(t_philosopher *philo, int philosopher)
 {
     int fork;
 
     fork = (philosopher + philo->number_of_philosopher - 1) / philo->number_of_philosopher;
-    if (philo->forks[fork] == EMPTY)
-        philo->forks[fork] = FULL;
+    // if (philo->forks[fork] == EMPTY)
+    // philo->forks[fork] = FULL;
 }
+
+void ft_sleep(t_philosopher *philo)
+{
+}
+
 void *routine(void *philosopher)
 {
     t_philosopher *philo;
+    int result;
     philo = (t_philosopher *)philosopher;
     while (1)
     {
-        take_fork_right(philo, philo->i);
-        printf("hello world\n");
+        // take_fork(philo, philo->i);
+        pthread_mutex_lock(&philo->forks[philo->i]);
+        printf("mutex 1 ==> %d\n", k);
+        k++;
+        pthread_mutex_unlock(&philo->forks[philo->i]);
         sleep(3);
     }
     return (NULL);
@@ -126,7 +136,9 @@ int main(int ac, char **av)
         philo.i++;
     }
     // pthread_join(philo.thread[0], NULL);
-    print(philo);
-    pthread_mutex_destroy(&philo.mutex);
+    // print(philo);
+    i = 0;
+    while (i < philo.number_of_philosopher)
+        pthread_mutex_destroy(&philo.forks[i++]);
     pthread_exit(0);
 }
