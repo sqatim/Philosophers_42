@@ -59,9 +59,9 @@ $(NAME) : $(OBJ_PHILO_ONE) $(OBJ_PHILO_TWO) $(OBJ_PHILO_THREE)
 	@rm -rf $(NAME)
 	@rm -rf philo_two
 	@rm -rf philo_three
-	@$(COMP) -g $(H_PHILO_FLAG) $(OBJ_PHILO_ONE)  -o $@
-	@$(COMP) -g $(H_PHILO_FLAG) $(OBJ_PHILO_TWO)  -o philo_two
-	@$(COMP) -g $(H_PHILO_FLAG) $(OBJ_PHILO_THREE)  -o philo_three
+	@$(COMP) -g $(H_PHILO_FLAG) $(OBJ_PHILO_ONE) -lpthread -o $@
+	@$(COMP) -g $(H_PHILO_FLAG) $(OBJ_PHILO_TWO)  -lpthread -o philo_two
+	@$(COMP) -g $(H_PHILO_FLAG) $(OBJ_PHILO_THREE)  -lpthread -o philo_three
 	@echo "										    Made by : \033[1;91mSqatim\033[m"
 	@echo "																					  "
 	@echo " _____  _    _ _____ _      ____   _____  ____  _____  _    _ ______ _____   _____ " 
