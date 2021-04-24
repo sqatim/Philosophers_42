@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_one.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:40:48 by sqatim            #+#    #+#             */
-/*   Updated: 2021/04/23 15:09:01 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/04/23 23:36:45 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,16 @@
 #define EMPTY 0
 #define FULL 1
 #define HUNGER 2
-#define THOUGHT 3
-#define SLEEP 4
+#define EATING 3
+#define THOUGHT 4
+#define SLEEP 5
 
 typedef struct s_philosopher
 {
     pthread_t *thread;
     pthread_mutex_t *forks;
-    int *state;
+    // int *state_forks;
+    int *state_philo;
     int i;
     int number_of_philosopher;
     int time_to_die;

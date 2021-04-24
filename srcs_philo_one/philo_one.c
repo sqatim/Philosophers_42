@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_one.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:43:16 by sqatim            #+#    #+#             */
-/*   Updated: 2021/04/23 17:51:47 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/04/24 02:37:45 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include <sys/errno.h>
 
 int k = 0;
+pthread_mutex_t mutex;
+
 void print_error(int error)
 {
     char *str;
@@ -73,16 +75,20 @@ t_philosopher get_args(int ac, char **av)
     int i;
 
     i = 0;
-
     philo.forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * philo.number_of_philosopher);
     while (i < philo.number_of_philosopher)
         pthread_mutex_init(&philo.forks[i++], NULL);
+    pthread_mutex_init(&mutex, NULL);
     philo.number_of_philosopher = ft_atoi(av[1]);
     philo.i = 0;
     philo.thread = (pthread_t *)malloc(sizeof(pthread_t) * philo.number_of_philosopher);
-    philo.state = (int *)malloc(sizeof(int) * philo.number_of_philosopher);
+    // philo.state_forks = (int *)malloc(sizeof(int) * philo.number_of_philosopher);
+    philo.state_philo = (int *)malloc(sizeof(int) * philo.number_of_philosopher);
     while (i < philo.number_of_philosopher)
-        philo.state[i++] = HUNGER;
+    {
+        philo.state_philo[i++] = HUNGER;
+        // philo.state_forks[i++] = EMPTY;
+    }
     philo.time_to_die = ft_atoi(av[2]);
     philo.time_to_eat = ft_atoi(av[3]);
     philo.time_to_sleep = ft_atoi(av[4]);
@@ -91,32 +97,86 @@ t_philosopher get_args(int ac, char **av)
     return (philo);
 }
 
-void take_fork(t_philosopher *philo, int philosopher)
+void take_forks(t_philosopher *philo, int philosopher)
 {
-    int fork;
+    int right;
+    int left;
+    int i;
 
-    fork = (philosopher + philo->number_of_philosopher - 1) / philo->number_of_philosopher;
-    // if (philo->forks[fork] == EMPTY)
-    // philo->forks[fork] = FULL;
+    i = philosopher;
+    right = (i + philo->number_of_philosopher - 1) / philo->number_of_philosopher;
+    left = (i + 1) / philo->number_of_philosopher;
+    pthread_mutex_lock(&philo->forks[right]);
+    // pthread_mutex_lock(&mutex);
+    philo->state_philo[i] = HUNGER;
+    if (philo->state_philo[i] == HUNGER && philo->state_philo[right] != EATING && philo->state_philo[left] != EATING)
+    {
+        philo->state_philo[i] == EATING;
+        // pthread_mutex_lock(&philo->forks[right]);
+        pthread_mutex_lock(&philo->forks[i]);
+    }
 }
 
-void ft_sleep(t_philosopher *philo)
+void put_forks(t_philosopher *philo, int philosopher)
 {
+    int right;
+    int left;
+    int i;
+
+    // puts("samir");s
+    i = philosopher;
+    right = (i + philo->number_of_philosopher - 1) / philo->number_of_philosopher;
+    left = (i + 1) / philo->number_of_philosopher;
+    if (philo->state_philo[i] == SLEEP)
+    {
+    pthread_mutex_unlock(&philo->forks[i]);
+    }
+    pthread_mutex_unlock(&philo->forks[right]);
+}
+
+void ft_sleep(t_philosopher *philo, int k)
+{
+    printf("Philo %d is sleeping\n", k);
+    usleep(philo->time_to_sleep * 1000);
+    philo->state_philo[k] = HUNGER;
+}
+
+// void ft_think(t_philosopher *philo)
+// {
+//     if(philo->state_philo[philo->i] = THOUGHT)
+//     {
+//     philo->state_philo[philo->i] = HUNGER;
+//     printf("Philo %d is thinking\n", philo->i + 1);
+//     }
+// }
+
+void ft_eating(t_philosopher *philo, int k)
+{
+    printf("Philo %d is eating\n", k);
+    usleep(philo->time_to_eat * 1000);
+    philo->state_philo[k] = SLEEP;
 }
 
 void *routine(void *philosopher)
 {
     t_philosopher *philo;
-    int result;
+    int k;
+    // int result;
     philo = (t_philosopher *)philosopher;
+    // pthread_mutex_lock(&philo->forks[philo->i]);
+    // printf("%d\n", philo->i);
+    k = philo->i;
+    // sleep(2);
+    // pthread_mutex_unlock(&philo->forks[philo->i]);
     while (1)
     {
-        // take_fork(philo, philo->i);
-        pthread_mutex_lock(&philo->forks[philo->i]);
-        printf("mutex 1 ==> %d\n", k);
-        k++;
-        pthread_mutex_unlock(&philo->forks[philo->i]);
-        sleep(3);
+        take_forks(philo, k);
+        if(philo->state_philo[k] == EATING)
+            ft_eating(philo, k);
+        put_forks(philo, k);
+        if(philo->state_philo[k] == SLEEP)  
+        ft_sleep(philo, k);
+        // ft_think(philo);
     }
     return (NULL);
 }
@@ -129,11 +189,14 @@ int main(int ac, char **av)
     i = 0;
     check_arguments(ac, av);
     philo = get_args(ac, av);
-    while (philo.i < philo.number_of_philosopher)
+    while (i < philo.number_of_philosopher)
     {
         pthread_create(&philo.thread[philo.i], NULL, &routine, (void *)&philo);
         pthread_detach(philo.thread[philo.i]);
-        philo.i++;
+        // sleep(2);
+        // sleep(2);
+        philo.i = i;
+        i++;
     }
     // pthread_join(philo.thread[0], NULL);
     // print(philo);
