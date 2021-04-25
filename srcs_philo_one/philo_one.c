@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_one.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:43:16 by sqatim            #+#    #+#             */
-/*   Updated: 2021/04/24 15:25:05 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/04/25 00:18:28 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,107 +97,43 @@ t_philosopher get_args(int ac, char **av)
     return (philo);
 }
 
-void take_forks(t_philosopher *philo, int philosopher)
-{
-    int right;
-    int left;
-    int i;
-
-    i = philosopher;
-    right = (i + philo->number_of_philosopher - 1) / philo->number_of_philosopher;
-    left = (i + 1) / philo->number_of_philosopher;
-    pthread_mutex_lock(&mutex);
-    philo->state_philo[i] = HUNGER;
-    if(philo->state_philo[i] == HUNGER && philo->state_philo[left] != EATING && philo->state_philo[right] != EATING)
-    {
-        philo->state_philo[i] = EATING;
-        pthread_mutex_lock(&philo->forks[i]);
-    }
-    pthread_mutex_unlock(&mutex);
-}
-
-void ft_eating(t_philosopher *philo, int k)
-{
-    if (philo->state_philo[k] == EATING)
-    {
-        printf("Philo %d is eating\n", k);
-        usleep(philo->time_to_eat * 1000);
-        // philo->state_philo[k] = SLEEP;
-    }
-}
-
-void put_forks(t_philosopher *philo, int philosopher)
-{
-    int right;
-    int left;
-    int i;
-
-    // puts("samir");s
-    pthread_mutex_lock(&mutex);
-    i = philosopher;
-    right = (i + philo->number_of_philosopher - 1) / philo->number_of_philosopher;
-    left = (i + 1) / philo->number_of_philosopher;
-
-    i = right;
-    right = (i + philo->number_of_philosopher - 1) / philo->number_of_philosopher;
-    left = (i + 1) / philo->number_of_philosopher;
-    // printf("i/right ==> %d\n", i);
-    // printf("right/right ==> %d\n", right);
-    // printf("left/right ==> %d\n", left);
-    if (philo->state_philo[i] == HUNGER && philo->state_philo[right] != EATING && philo->state_philo[left] != EATING)
-    {
-        // printf("i ==> %d\n", i);
-        philo->state_philo[i] = EATING;
-        pthread_mutex_lock(&philo->forks[i]);
-        // pthread_mutex_lock(&philo->forks[right]);
-    }
-    i = philosopher;
-    left = (i + 1) / philo->number_of_philosopher;
-    i = left;
-    right = (i + philo->number_of_philosopher - 1) / philo->number_of_philosopher;
-    left = (i + 1) / philo->number_of_philosopher;
-    if (philo->state_philo[i] == HUNGER && philo->state_philo[right] != EATING && philo->state_philo[left] != EATING)
-    {
-        // printf("qatim\n");
-        pthread_mutex_lock(&philo->forks[i]);
-        philo->state_philo[i] = EATING;
-        // pthread_mutex_lock(&philo->forks[right]);
-    }
-    pthread_mutex_unlock(&mutex);
-}
-
-void ft_sleep(t_philosopher *philo, int i)
-{
-    int right;
-
-    right = (i + philo->number_of_philosopher - 1) / philo->number_of_philosopher;
-    // if (philo->state_philo[i] == SLEEP)
-    // {
-        pthread_mutex_unlock(&philo->forks[right]);
-        printf("Philo %d is sleeping\n", k);
-        usleep(philo->time_to_sleep * 1000);
-        philo->state_philo[k] = HUNGER;
-    // }
-}
-
 void *routine(void *philosopher)
 {
     t_philosopher *philo;
     int k;
     philo = (t_philosopher *)philosopher;
+    pthread_mutex_lock(&mutex);
     k = philo->i;
+    printf("%d\n", philo->i);
+    pthread_mutex_unlock(&mutex);
+
+    k = 0;
     int right;
-    right = (k + philo->number_of_philosopher - 1) / philo->number_of_philosopher;
     while (1)
     {
-        
-        take_forks(philo, k);
-        // if (philo->state_philo[k] == EATING)
-        ft_eating(philo, k);
-        put_forks(philo, k);
-        // if (philo->state_philo[k] == SLEEP)
-        ft_sleep(philo, k);
-        // ft_think(philo);
+        pthread_mutex_lock(&mutex);
+        if (k == philo->number_of_philosopher)
+            k = 0;
+        // pthread_mutex_lock(&philo->forks[right]);
+        // printf("philo %d take the right fork\n", k);
+        // k = philo->i;
+        // right = (k + philo->number_of_philosopher - 1) / philo->number_of_philosopher;
+
+        right = (k + philo->number_of_philosopher - 1) % philo->number_of_philosopher;
+        printf("k ==> %d {==} right ==> %d\n", k, right);
+        // printf("%d == %d\n", philo->state_philo[k], philo->state_philo[right]);
+        // if (philo->state_philo[k] == HUNGER && philo->state_philo[right] != EATING)
+        // {
+        //     pthread_mutex_lock(&philo->forks[k]);
+        //     printf("philo %d take the left fork\n", k);
+        //     printf("philo %d start eating\n", k);
+        //     usleep(philo->time_to_eat * 1000);
+        // }
+        // printf("philo %d put the right fork\n", k);
+        // pthread_mutex_unlock(&philo->forks[right]);
+        k++;
+        sleep(2);
+        pthread_mutex_unlock(&mutex);
     }
     return (NULL);
 }
@@ -213,20 +149,17 @@ int main(int ac, char **av)
     while (i < philo.number_of_philosopher)
     {
         philo.i = i;
-        pthread_create(&philo.thread[philo.i], NULL, &routine, (void *)&philo);
-        // pthread_detach(philo.thread[philo.i]);
-        // sleep(2);
-        // sleep(2);
+        pthread_create(&philo.thread[i], NULL, &routine, (void *)&philo);
         i++;
     }
     i = 0;
-    while(i < philo.number_of_philosopher)
-    pthread_join(philo.thread[i++], NULL);
+    while (i < philo.number_of_philosopher)
+        pthread_join(philo.thread[i++], NULL);
     // pthread_join(philo.thread[0], NULL);
     // print(philo);
     i = 0;
     while (i < philo.number_of_philosopher)
         pthread_mutex_destroy(&philo.forks[i++]);
-        return(0);
+    return (0);
     // pthread_exit(0);
 }
