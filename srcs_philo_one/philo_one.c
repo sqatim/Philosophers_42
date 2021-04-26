@@ -6,7 +6,7 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:43:16 by sqatim            #+#    #+#             */
-/*   Updated: 2021/04/26 15:28:33 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/04/26 15:46:05 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,25 +118,36 @@ void *routine(void *philosopher)
 	// sleep(3);
 	while (1)
 	{
-		if (philo->state_forks[k] == EMPTY)
-		{
-			pthread_mutex_lock(&philo->forks[k]);
-			printf("philo %d take the left fork\n", k);
-			philo->state_forks[k] = FULL;
-		}
-		right = (k + philo->number_of_philosopher - 1) % philo->number_of_philosopher;
-		if (philo->state_forks[right] == EMPTY)
-		{
-			pthread_mutex_lock(&philo->forks[right]);
-			printf("philo %d take the right fork\n", k);
-			philo->state_forks[right] = FULL;
-		}
-		else if (philo->state_forks[k] == FULL)
-		{
-			pthread_mutex_unlock(&philo->forks[k]);
-			printf("philo %d put the left fork\n", k);
-			philo->state_forks[k] = EMPTY;
-		}
+		if(!pthread_mutex_lock(&philo->forks[0]))
+			printf("0\n");
+		if(!pthread_mutex_lock(&philo->forks[1]))
+			printf("1\n");
+		pthread_mutex_lock(&philo->forks[1]);
+			printf("2\n");
+		if(!pthread_mutex_unlock(&philo->forks[1]))
+			printf("unlock 1\n");
+		if(!pthread_mutex_unlock(&philo->forks[0]))
+			printf("unlock 0\n");
+		sleep(3);
+		// if (philo->state_forks[k] == EMPTY)
+		// {
+		// 	pthread_mutex_lock(&philo->forks[k]);
+		// 	printf("philo %d take the left fork\n", k);
+		// 	philo->state_forks[k] = FULL;
+		// }
+		// right = (k + philo->number_of_philosopher - 1) % philo->number_of_philosopher;
+		// if (philo->state_forks[right] == EMPTY)
+		// {
+		// 	pthread_mutex_lock(&philo->forks[right]);
+		// 	printf("philo %d take the right fork\n", k);
+		// 	philo->state_forks[right] = FULL;
+		// }
+		// else if (philo->state_forks[k] == FULL)
+		// {
+		// 	pthread_mutex_unlock(&philo->forks[k]);
+		// 	printf("philo %d put the left fork\n", k);
+		// 	philo->state_forks[k] = EMPTY;
+		// }
 		k++;
 		if (k >= philo->number_of_philosopher)
 			k = 0;
