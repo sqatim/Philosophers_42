@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_one.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:40:48 by sqatim            #+#    #+#             */
-/*   Updated: 2021/04/23 23:36:45 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/04/26 15:24:09 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ typedef struct s_philosopher
     pthread_mutex_t *forks;
     // int *state_forks;
     int *state_philo;
+    int *state_forks;
     int i;
     int number_of_philosopher;
     int time_to_die;
