@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_one.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:43:16 by sqatim            #+#    #+#             */
-/*   Updated: 2021/04/28 02:28:58 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/04/28 17:35:55 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,24 +144,26 @@ void *routine(void *data_philosophers)
 	right = (k + data->nb_of_philo - 1) % data->nb_of_philo;
 	while (1)
 	{
-		// sleep(1);
-		if (data->philo[k].s_fork == EMPTY)
-		{
-			usleep(40);
-			pthread_mutex_lock(&data->philo[k].fork);
-			printf("%d take left\n", k);
-			data->philo[k].s_fork = FULL;
-		}
-		if (data->philo[right].s_fork == EMPTY)
-		{
-			pthread_mutex_lock(&data->philo[right].fork);
-			printf("%d take right\n", right);
-			data->philo[right].s_fork = FULL;
-		}
+		right = (k + data->nb_of_philo - 1) % data->nb_of_philo;
+		pthread_mutex_lock(&data->philo[k].fork);
+		printf("philo %d take the left fork[%d]\n", k, k);
+		pthread_mutex_lock(&data->philo[right].fork);
+		printf("philo %d take the right fork[%d]\n", k, right);
+		printf("philo %d start eating\n", k);
+		usleep(data->time_to_eat * 1000);
+		printf("philo %d put forks\n", k);
+		pthread_mutex_unlock(&data->philo[k].fork);
+		pthread_mutex_unlock(&data->philo[right].fork);
+		printf("philo %d start sleeping\n", k);
+		usleep(data->time_to_sleep * 1000);
+		printf("philo %d start thinking\n", k);
 		
+		pthread_mutex_lock(&mutex);
 		k++;
 		if(k >= data->nb_of_philo)
-		right = (k + data->nb_of_philo - 1) % data->nb_of_philo;
+			k = 0;
+		pthread_mutex_unlock(&mutex);
+
 	}
 	return (NULL);
 }
