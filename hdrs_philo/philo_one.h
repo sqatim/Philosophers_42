@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_one.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:40:48 by sqatim            #+#    #+#             */
-/*   Updated: 2021/04/26 15:24:09 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/04/28 01:33:58 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,26 +23,37 @@
 #define FULL 1
 #define HUNGER 2
 #define EATING 3
-#define THOUGHT 4
-#define SLEEP 5
+#define THINKING 4
+#define SLEEPING 5
 
 typedef struct s_philosopher
 {
-    pthread_t *thread;
-    pthread_mutex_t *forks;
-    // int *state_forks;
-    int *state_philo;
-    int *state_forks;
+    pthread_t thread;
+    pthread_mutex_t fork;
     int i;
-    int number_of_philosopher;
+    int r;
+    int j;
+    int state;
+    int s_fork;
+    int s_thinking;
+    int s_eating;
+    int s_sleeping;
+} t_philo;
+
+typedef struct s_data
+{
+    t_philo *philo;
+    int i;
+    // int *state_forks;
+    int nb_of_philo;
     int time_to_die;
     int time_to_eat;
     int time_to_sleep;
     int number_time_must_eat;
-} t_philosopher;
+} t_data;
 
 int ft_isdigit(int c);
 int ft_atoi(const char *str);
-void print(t_philosopher philo);
+void print(t_data data);
 
 #endif
