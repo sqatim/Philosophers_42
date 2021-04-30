@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_one.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:40:48 by sqatim            #+#    #+#             */
-/*   Updated: 2021/04/30 01:58:25 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/04/30 17:46:55 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,26 +34,23 @@ typedef struct s_philosopher
     int time_to_die;
     int time_to_eat;
     int time_to_sleep;
-    long starting_t;
+    int if_true;
+    int number_time_must_eat;
+    long starting_t_d;
+    long    starting_t_p;
     long current_t;
+    int number_of_eating;
+    int *each_one;
     pthread_mutex_t *fork;
     pthread_mutex_t *mutex;
-    pthread_mutex_t *die_m;
+    pthread_mutex_t die_m;
     pthread_t die_p;
-
-    // int s_thinking;
-    // int s_eating;
-    // int s_sleeping;
 } t_philo;
 
 typedef struct s_data
 {
-
     t_philo *philo;
     int nb_of_philo;
-    // int time_to_die;
-    // int time_to_eat;
-    // int time_to_sleep;
     int number_time_must_eat;
 } t_data;
 
