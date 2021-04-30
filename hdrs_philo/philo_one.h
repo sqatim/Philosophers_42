@@ -6,7 +6,7 @@
 /*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:40:48 by sqatim            #+#    #+#             */
-/*   Updated: 2021/04/29 04:19:54 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/04/30 01:58:25 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,13 @@ typedef struct s_philosopher
     int time_to_die;
     int time_to_eat;
     int time_to_sleep;
+    long starting_t;
+    long current_t;
     pthread_mutex_t *fork;
+    pthread_mutex_t *mutex;
+    pthread_mutex_t *die_m;
+    pthread_t die_p;
+
     // int s_thinking;
     // int s_eating;
     // int s_sleeping;
