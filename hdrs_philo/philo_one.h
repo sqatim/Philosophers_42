@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_one.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:40:48 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/01 02:08:54 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/01 15:33:25 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_philosopher
     int *each_one;
     pthread_mutex_t *fork;
     pthread_mutex_t *mutex;
+    pthread_mutex_t *main;
     pthread_mutex_t die_m;
     pthread_mutex_t *test_die_m;
 
@@ -51,5 +52,6 @@ typedef struct s_philosopher
 
 int ft_isdigit(int c);
 int ft_atoi(const char *str);
+void    free_philo(t_philo *philo, pthread_t *thread);
 
 #endif
