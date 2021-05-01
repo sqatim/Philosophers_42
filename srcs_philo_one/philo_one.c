@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_one.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:43:16 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/01 17:50:35 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/01 21:44:29 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,7 @@ void print_msg(t_philo *philo, int number, int x, int fork)
 	else if (number == 5)
 		printf("%ld %d is thinking\n", interval, x);
 	else if (number == 6)
-		printf("philo %d put forks\n", x);
+		printf("%ld philo %d put forks\n", interval, x);
 	pthread_mutex_unlock(&philo->mutex[0]);
 }
 
@@ -221,37 +221,26 @@ void *routine(void *philosopher)
 		pthread_mutex_lock(&philo->test_die_m[philo->l]);
 		print_msg(philo, 3, philo->l, 0);
 		usleep(philo->time_to_eat * 1000);
-		// philo->number_of_eating++;
-		// if (philo->if_true == 1 && philo->number_of_eating < philo->number_time_must_eat)
-		// {
-		// 	philo->each_one[0]++;
-		// 	if (philo->each_one[0] == philo->nb_of_philo * philo->number_time_must_eat)
-		// 	{
-		// 		printf("done\n");
-		// 		exit(1);
-		// 	}
-		// }
+		if (philo->if_true == 1 && philo->number_of_eating < philo->number_time_must_eat)
+		{
+			philo->number_of_eating++;
+			philo->each_one[0]++;
+			if (philo->each_one[0] == philo->nb_of_philo * philo->number_time_must_eat)
+			{
+				pthread_mutex_unlock(&philo->main[0]);
+				printf("done\n");
+				break;
+			}
+		}
 		pthread_mutex_unlock(&philo->test_die_m[philo->l]);
-		print_msg(philo, 6, philo->l, 0);
+		// print_msg(philo, 6, philo->l, 0);
 		pthread_mutex_unlock(&philo->fork[philo->r]);
 		pthread_mutex_unlock(&philo->fork[philo->l]);
+		if (philo->if_true == 1 && philo->number_of_eating == philo->number_time_must_eat)
+			break;
 		print_msg(philo, 4, philo->l, 0);
 		usleep(philo->time_to_sleep * 1000);
 		print_msg(philo, 5, philo->l, 0);
-		// if (philo->if_true == 1 && philo->number_of_eating == philo->number_time_must_eat)
-		// {
-		// 	//unlock
-		// 	philo->each_one[0] += philo->number_of_eating;
-		// 	if (philo->each_one[0] == philo->nb_of_philo * philo->number_time_must_eat)
-		// 	{
-		// 		pthread_mutex_lock(&philo->mutex[0]);
-		// 		pthread_mutex_unlock(&philo[0].main[0]);
-		// 		printf("done\n");
-		// 		break;
-		// 	}
-		// 	else
-		// 		break;
-		// }
 	}
 	// printf("dsakljdklsajdklasjkldjsakldkljsdja\n");
 	return (NULL);
