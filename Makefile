@@ -16,7 +16,6 @@ OBJ_PHILO_THREE_PATH= obj_philo_three
 SRC_PHILO_ONE_NAME=philo_one.c\
 					tools.c\
 					ft_atoi.c\
-					print.c\
 
 SRC_PHILO_TWO_NAME=philo_two.c\
 			

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_one.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:40:48 by sqatim            #+#    #+#             */
-/*   Updated: 2021/04/30 17:46:55 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/01 02:08:54 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,25 +37,19 @@ typedef struct s_philosopher
     int if_true;
     int number_time_must_eat;
     long starting_t_d;
-    long    starting_t_p;
+    long starting_t_p;
     long current_t;
     int number_of_eating;
     int *each_one;
     pthread_mutex_t *fork;
     pthread_mutex_t *mutex;
     pthread_mutex_t die_m;
+    pthread_mutex_t *test_die_m;
+
     pthread_t die_p;
 } t_philo;
 
-typedef struct s_data
-{
-    t_philo *philo;
-    int nb_of_philo;
-    int number_time_must_eat;
-} t_data;
-
 int ft_isdigit(int c);
 int ft_atoi(const char *str);
-void print(t_data data);
 
 #endif
