@@ -6,7 +6,7 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:43:16 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/02 15:10:01 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/02 17:41:29 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,22 +184,23 @@ void *ft_die(void *philosopher)
 
 	philo = (t_philo *)philosopher;
 	gettimeofday(&starting_t, NULL);
-	philo->starting_t_d = starting_t.tv_sec * 1000 + starting_t.tv_usec / 1000;
+	philo->starting_t_d = philo->starting_t_p ;//starting_t.tv_sec * 1000 + starting_t.tv_usec / 1000;
 	while (1)
 	{
-		pthread_mutex_lock(&philo->test_die_m[philo->l]);
+		pthread_mutex_lock(&philo->test_die_m[philo->r]);
 		interval = get_time(philo->starting_t_d);
-		if (interval >= philo->time_to_die)
+		// printf("interval == %ld\n",interval);
+		if (interval > philo->time_to_die)
 		{
 			interval = get_time(philo->starting_t_p);
 			pthread_mutex_lock(&philo->mutex[0]);
-			printf("%ld %d died\n", interval, philo->l);
+			printf("%ld %d died\n", interval, philo->l + 1);
 			pthread_mutex_unlock(&philo->main[0]);
 			// exit(1);
 			break;
 		}
-		pthread_mutex_unlock(&philo->test_die_m[philo->l]);
-		usleep(1000);
+		pthread_mutex_unlock(&philo->test_die_m[philo->r]);
+		usleep(3000);
 	}
 	return (NULL);
 }
@@ -210,8 +211,6 @@ void *routine(void *philosopher)
 	struct timeval starting_t;
 
 	philo = (t_philo *)philosopher;
-	// gettimeofday(&starting_t, NULL);
-	// philo->starting_t_p = starting_t.tv_sec * 1000 + starting_t.tv_usec / 1000;
 	pthread_create(&philo->die_p, NULL, &ft_die, (void *)philo);
 	pthread_detach(philo->die_p);
 	while (1)
@@ -220,8 +219,10 @@ void *routine(void *philosopher)
 		print_msg(philo, 1, philo->l, philo->r);
 		pthread_mutex_lock(&philo->fork[philo->l]);
 		print_msg(philo, 2, philo->l, philo->l);
-		pthread_mutex_lock(&philo->test_die_m[philo->l]);
+		
+		pthread_mutex_lock(&philo->test_die_m[philo->r]);
 		print_msg(philo, 3, philo->l, 0);
+		pthread_mutex_unlock(&philo->test_die_m[philo->r]);
 		usleep(philo->time_to_eat * 1000);
 		if (philo->if_true == 1 && philo->number_of_eating < philo->number_time_must_eat)
 		{
@@ -236,13 +237,13 @@ void *routine(void *philosopher)
 		}
 		pthread_mutex_unlock(&philo->fork[philo->r]);
 		pthread_mutex_unlock(&philo->fork[philo->l]);
-		print_msg(philo, 6, philo->l, 0);
-		pthread_mutex_unlock(&philo->test_die_m[philo->l]);
 		if (philo->if_true == 1 && philo->number_of_eating == philo->number_time_must_eat)
 			break;
+		print_msg(philo, 6, philo->l, 0);
 		print_msg(philo, 4, philo->l, 0);
 		usleep(philo->time_to_sleep * 1000);
 		print_msg(philo, 5, philo->l, 0);
+		usleep(10);
 	}
 	// printf("dsakljdklsajdklasjkldjsakldkljsdja\n");
 	return (NULL);
@@ -267,14 +268,15 @@ int main(int ac, char **av)
 		i++;
 	}
 	i = 0;
-	while (i < philo[0].nb_of_philo)
+	while (i < philo->nb_of_philo)
 	{
 		pthread_create(&thread[i], NULL, &routine, (void *)&philo[i]);
 		pthread_detach(thread[i]);
-		usleep(100);
+		usleep(20);
 		i++;
 	}
 	pthread_mutex_lock(&philo[0].main[0]);
 	free_philo(philo, thread);
+	pthread_mutex_unlock(&philo[0].main[0]);
 	return (0);
 }
