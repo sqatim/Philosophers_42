@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_one.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:43:16 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/02 17:41:29 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/02 22:19:18 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,34 +109,28 @@ t_philo *get_args(int ac, char **av, pthread_t **thread)
 	philo[0].test_die_m = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * number);
 	philo[0].mutex = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
 	philo[0].main = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
-	// pthread_mutex_init(&philo[0].mutex[0], NULL);
-	i = 1;
-	pthread_mutex_init(&philo[0].fork[0], NULL);
-	pthread_mutex_init(&philo[0].test_die_m[0], NULL);
-	pthread_mutex_init(&philo[0].mutex[0], NULL);
-	pthread_mutex_init(&philo[0].main[0], NULL);
-	pthread_mutex_init(&philo[0].die_m, NULL);
+	i = 0;
 	while (i < number)
 	{
-		pthread_mutex_init(&philo[0].fork[i], NULL);
-		pthread_mutex_init(&philo[0].test_die_m[i], NULL);
-		philo[i].fork = philo[0].fork;
-		philo[i].test_die_m = philo[0].test_die_m;
-		philo[i].mutex = philo[0].mutex;
-		philo[i].main = philo[0].main;
-		philo[i].each_one = philo[0].each_one;
+		pthread_mutex_init(&philo->fork[i], NULL);
+		pthread_mutex_init(&philo->test_die_m[i], NULL);
+		i++;
+	}
+	i = 1;
+	pthread_mutex_init(&philo->mutex[0], NULL);
+	pthread_mutex_init(&philo->main[0], NULL);
+	pthread_mutex_init(&philo->die_m, NULL);
+
+	while (i < number)
+	{
+		philo[i].fork = philo->fork;
+		philo[i].test_die_m = philo->test_die_m;
+		philo[i].mutex = philo->mutex;
+		philo[i].main = philo->main;
+		philo[i].each_one = philo->each_one;
 		pthread_mutex_init(&philo[i].die_m, NULL);
 		i++;
 	}
-	// while (i < number)
-	// {
-	// 	pthread_mutex_init(&philo[0].fork[i], NULL);
-	// 	pthread_mutex_init(&philo[i].die_m, NULL);
-	// 	philo[i + 1].fork = philo[0].fork;
-	// 	philo[i + 1].mutex = philo[0].mutex;
-	// 	philo[i + 1].each_one = philo[0].each_one;
-	// 	i++;
-	// }
 	return (philo);
 }
 
@@ -184,19 +178,17 @@ void *ft_die(void *philosopher)
 
 	philo = (t_philo *)philosopher;
 	gettimeofday(&starting_t, NULL);
-	philo->starting_t_d = philo->starting_t_p ;//starting_t.tv_sec * 1000 + starting_t.tv_usec / 1000;
+	philo->starting_t_d = philo->starting_t_p;
 	while (1)
 	{
 		pthread_mutex_lock(&philo->test_die_m[philo->r]);
 		interval = get_time(philo->starting_t_d);
-		// printf("interval == %ld\n",interval);
 		if (interval > philo->time_to_die)
 		{
 			interval = get_time(philo->starting_t_p);
 			pthread_mutex_lock(&philo->mutex[0]);
 			printf("%ld %d died\n", interval, philo->l + 1);
 			pthread_mutex_unlock(&philo->main[0]);
-			// exit(1);
 			break;
 		}
 		pthread_mutex_unlock(&philo->test_die_m[philo->r]);
@@ -219,7 +211,7 @@ void *routine(void *philosopher)
 		print_msg(philo, 1, philo->l, philo->r);
 		pthread_mutex_lock(&philo->fork[philo->l]);
 		print_msg(philo, 2, philo->l, philo->l);
-		
+
 		pthread_mutex_lock(&philo->test_die_m[philo->r]);
 		print_msg(philo, 3, philo->l, 0);
 		pthread_mutex_unlock(&philo->test_die_m[philo->r]);
@@ -243,7 +235,7 @@ void *routine(void *philosopher)
 		print_msg(philo, 4, philo->l, 0);
 		usleep(philo->time_to_sleep * 1000);
 		print_msg(philo, 5, philo->l, 0);
-		usleep(10);
+		usleep(40);
 	}
 	// printf("dsakljdklsajdklasjkldjsakldkljsdja\n");
 	return (NULL);
@@ -262,7 +254,7 @@ int main(int ac, char **av)
 	// lock
 	pthread_mutex_lock(&philo[0].main[0]);
 	gettimeofday(&starting_t, NULL);
-	while(i < philo[0].nb_of_philo)
+	while (i < philo[0].nb_of_philo)
 	{
 		philo[i].starting_t_p = starting_t.tv_sec * 1000 + starting_t.tv_usec / 1000;
 		i++;
