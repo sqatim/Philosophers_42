@@ -6,7 +6,7 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:40:48 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/01 15:33:25 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/03 16:13:36 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ typedef struct s_philosopher
     pthread_mutex_t *fork;
     pthread_mutex_t *mutex;
     pthread_mutex_t *main;
-    pthread_mutex_t die_m;
+    pthread_mutex_t *die;
     pthread_mutex_t *test_die_m;
 
     pthread_t die_p;

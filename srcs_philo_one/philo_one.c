@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_one.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:43:16 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/02 22:19:18 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/03 17:31:06 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ t_philo *get_args(int ac, char **av, pthread_t **thread)
 	philo[0].fork = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * number);
 	philo[0].test_die_m = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * number);
 	philo[0].mutex = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
+	philo[0].die = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
 	philo[0].main = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
 	i = 0;
 	while (i < number)
@@ -119,16 +120,17 @@ t_philo *get_args(int ac, char **av, pthread_t **thread)
 	i = 1;
 	pthread_mutex_init(&philo->mutex[0], NULL);
 	pthread_mutex_init(&philo->main[0], NULL);
-	pthread_mutex_init(&philo->die_m, NULL);
+	pthread_mutex_init(&philo->die[0], NULL);
 
 	while (i < number)
 	{
 		philo[i].fork = philo->fork;
 		philo[i].test_die_m = philo->test_die_m;
 		philo[i].mutex = philo->mutex;
+		philo[i].die = philo->die;
 		philo[i].main = philo->main;
 		philo[i].each_one = philo->each_one;
-		pthread_mutex_init(&philo[i].die_m, NULL);
+		// pthread_mutex_init(&philo[i].die_m, NULL);
 		i++;
 	}
 	return (philo);
@@ -148,8 +150,9 @@ void print_msg(t_philo *philo, int number, int x, int fork)
 {
 	struct timeval current_t;
 	long interval;
-
-	pthread_mutex_lock(&philo->mutex[0]);
+	
+	if(pthread_mutex_lock(philo->mutex))
+		return ;
 	gettimeofday(&current_t, NULL);
 	interval = get_time(philo->starting_t_p);
 	if (number == 1)
@@ -167,7 +170,7 @@ void print_msg(t_philo *philo, int number, int x, int fork)
 		printf("%ld %d is thinking\n", interval, x + 1);
 	else if (number == 6)
 		printf("%ld philo %d put forks\n", interval, x + 1);
-	pthread_mutex_unlock(&philo->mutex[0]);
+	pthread_mutex_unlock(philo->mutex);
 }
 
 void *ft_die(void *philosopher)
@@ -183,14 +186,19 @@ void *ft_die(void *philosopher)
 	{
 		pthread_mutex_lock(&philo->test_die_m[philo->r]);
 		interval = get_time(philo->starting_t_d);
+		// pthread_mutex_lock(&philo->mutex[0]);
 		if (interval > philo->time_to_die)
-		{
+		{	
+			// puts("salam");
+			pthread_mutex_lock(philo->mutex);
+			pthread_mutex_lock(&philo->die[0]);
 			interval = get_time(philo->starting_t_p);
-			pthread_mutex_lock(&philo->mutex[0]);
 			printf("%ld %d died\n", interval, philo->l + 1);
 			pthread_mutex_unlock(&philo->main[0]);
 			break;
 		}
+		// else
+		// pthread_mutex_unlock(&philo->mutex[0]);
 		pthread_mutex_unlock(&philo->test_die_m[philo->r]);
 		usleep(3000);
 	}
@@ -207,12 +215,14 @@ void *routine(void *philosopher)
 	pthread_detach(philo->die_p);
 	while (1)
 	{
-		pthread_mutex_lock(&philo->fork[philo->r]);
+		if(pthread_mutex_lock(&philo->fork[philo->r]))
+			break;
 		print_msg(philo, 1, philo->l, philo->r);
-		pthread_mutex_lock(&philo->fork[philo->l]);
+		if(pthread_mutex_lock(&philo->fork[philo->l]))
+			break;
 		print_msg(philo, 2, philo->l, philo->l);
-
-		pthread_mutex_lock(&philo->test_die_m[philo->r]);
+		if(pthread_mutex_lock(&philo->test_die_m[philo->r]))
+			break;
 		print_msg(philo, 3, philo->l, 0);
 		pthread_mutex_unlock(&philo->test_die_m[philo->r]);
 		usleep(philo->time_to_eat * 1000);
@@ -231,7 +241,7 @@ void *routine(void *philosopher)
 		pthread_mutex_unlock(&philo->fork[philo->l]);
 		if (philo->if_true == 1 && philo->number_of_eating == philo->number_time_must_eat)
 			break;
-		print_msg(philo, 6, philo->l, 0);
+		// print_msg(philo, 6, philo->l, 0);
 		print_msg(philo, 4, philo->l, 0);
 		usleep(philo->time_to_sleep * 1000);
 		print_msg(philo, 5, philo->l, 0);
@@ -264,11 +274,11 @@ int main(int ac, char **av)
 	{
 		pthread_create(&thread[i], NULL, &routine, (void *)&philo[i]);
 		pthread_detach(thread[i]);
-		usleep(20);
+		usleep(100);
 		i++;
 	}
 	pthread_mutex_lock(&philo[0].main[0]);
 	free_philo(philo, thread);
-	pthread_mutex_unlock(&philo[0].main[0]);
+	// pthread_mutex_unlock(&philo[0].main[0]);
 	return (0);
 }
