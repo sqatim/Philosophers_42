@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_two.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:41:38 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/04 01:18:23 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/04 14:51:18 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,9 @@
 #include <semaphore.h>
 #include <fcntl.h>
 
-#define EMPTY 0
-#define FULL 1
-#define HUNGER 2
-#define EATING 3
-#define THINKING 4
-#define SLEEPING 5
-
 typedef struct s_philosopher
 {
-    int r;
-    int l;
+    int nbr;
     int nb_of_philo;
     int time_to_die;
     int time_to_eat;

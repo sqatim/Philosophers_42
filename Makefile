@@ -24,6 +24,9 @@ SRC_PHILO_TWO_NAME=philo_two.c\
 					free.c\
 			
 SRC_PHILO_THREE_NAME=philo_three.c\
+					ft_atoi.c\
+					tools.c\
+					free.c\
 
 
 HDR_PHILO_ONE_NAME=philo_one.h 
