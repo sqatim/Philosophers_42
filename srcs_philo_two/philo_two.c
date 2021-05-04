@@ -6,7 +6,7 @@
 /*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:45:55 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/03 02:34:58 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/04 01:53:11 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,13 +104,24 @@ t_philo *get_args(int ac, char **av, pthread_t **thread, t_sem *semaphore)
     *thread = (pthread_t *)malloc(sizeof(pthread_t) * number);
     philo->each_one = (int *)malloc(sizeof(int));
     philo->each_one[0] = 0;
-    sem_init(&semaphore->fork, 0, 5);
-    sem_init(&semaphore->print, 0, 1);
+    sem_unlink("fork");
+    sem_unlink("print");
+    sem_unlink("main");
+    sem_unlink("die");
+    semaphore->fork = sem_open("fork", O_CREAT, O_RDWR, 5);
+    semaphore->print = sem_open("print", O_CREAT, O_RDWR, 1);
+    semaphore->main = sem_open("main", O_CREAT, O_RDWR, 1);
+    semaphore->die = sem_open("die", O_CREAT, O_RDWR, 1);
+    // sem_init(&semaphore->print, 0, 1);
     i = 0;
     while (i < number)
     {
-        philo[i].fork = &semaphore->fork;
-        philo[i].print = &semaphore->print;
+        philo[i].fork = semaphore->fork;
+        philo[i].print = semaphore->print;
+        philo[i].main = semaphore->main;
+        philo[i].die = semaphore->die;
+        if (i != 0)
+            philo[i].each_one = philo->each_one;
         i++;
     }
     return (philo);
@@ -135,9 +146,9 @@ void print_msg(t_philo *philo, int number, int x, int fork)
     gettimeofday(&current_t, NULL);
     interval = get_time(philo->starting_t_p);
     if (number == 1)
-        printf("%ld %d has taken a right fork[%d]\n", interval, x + 1, fork);
+        printf("%ld %d has taken a fork\n", interval, x + 1);
     else if (number == 2)
-        printf("%ld %d has taken a left fork[%d]\n", interval, x + 1, fork);
+        printf("%ld %d has taken a fork\n", interval, x + 1);
     else if (number == 3)
     {
         philo->starting_t_d = current_t.tv_sec * 1000 + current_t.tv_usec / 1000;
@@ -154,32 +165,34 @@ void print_msg(t_philo *philo, int number, int x, int fork)
     // pthread_mutex_unlock(&philo->mutex[0]);
 }
 
-// void *ft_die(void *philosopher)
-// {
-//     t_philo *philo;
-//     long interval;
-//     struct timeval starting_t;
+void *ft_die(void *philosopher)
+{
+    t_philo *philo;
+    long interval;
+    struct timeval starting_t;
 
-//     philo = (t_philo *)philosopher;
-//     gettimeofday(&starting_t, NULL);
-//     philo->starting_t_d = philo->starting_t_p;
-//     while (1)
-//     {
-//         pthread_mutex_lock(&philo->test_die_m[philo->r]);
-//         interval = get_time(philo->starting_t_d);
-//         if (interval > philo->time_to_die)
-//         {
-//             interval = get_time(philo->starting_t_p);
-//             pthread_mutex_lock(&philo->mutex[0]);
-//             printf("%ld %d died\n", interval, philo->l + 1);
-//             pthread_mutex_unlock(&philo->main[0]);
-//             break;
-//         }
-//         pthread_mutex_unlock(&philo->test_die_m[philo->r]);
-//         usleep(3000);
-//     }
-//     return (NULL);
-// }
+    philo = (t_philo *)philosopher;
+    gettimeofday(&starting_t, NULL);
+    philo->starting_t_d = philo->starting_t_p;
+    while (1)
+    {
+        if (sem_wait(philo->die))
+            break;
+        interval = get_time(philo->starting_t_d);
+        if (interval > philo->time_to_die)
+        {
+            sem_wait(philo->print);
+            interval = get_time(philo->starting_t_p);
+            printf("%ld %d died\n", interval, philo->l + 1);
+            sem_post(philo->main);
+            break;
+        }
+        if (sem_post(philo->die))
+            break;
+        usleep(3000);
+    }
+    return (NULL);
+}
 
 void *routine(void *philosopher)
 {
@@ -187,43 +200,39 @@ void *routine(void *philosopher)
     struct timeval starting_t;
 
     philo = (t_philo *)philosopher;
-    // pthread_create(&philo->die_p, NULL, &ft_die, (void *)philo);
-    // pthread_detach(philo->die_p);
+    pthread_create(&philo->die_p, NULL, &ft_die, (void *)philo);
+    pthread_detach(philo->die_p);
     while (1)
     {
-        sem_wait(philo->fork);
+        if(sem_wait(philo->fork))
+            break;
         print_msg(philo, 1, philo->l, philo->r);
-        sem_wait(philo->fork);
-        // pthread_mutex_lock(&philo->fork[philo->l]);
+        if(sem_wait(philo->fork))
+            break;
         print_msg(philo, 2, philo->l, philo->l);
-        // pthread_mutex_lock(&philo->test_die_m[philo->r]);
         print_msg(philo, 3, philo->l, 0);
-        // pthread_mutex_unlock(&philo->test_die_m[philo->r]);
         usleep(philo->time_to_eat * 1000);
-        // if (philo->if_true == 1 && philo->number_of_eating < philo->number_time_must_eat)
-        // {
-        //     philo->number_of_eating++;
-        //     philo->each_one[0]++;
-        //     if (philo->each_one[0] == philo->nb_of_philo * philo->number_time_must_eat)
-        //     {
-        //         // pthread_mutex_unlock(&philo->main[0]);
-        //         printf("done\n");
-        //         break;
-        //     }
-        // }
+        if (philo->if_true == 1 && philo->number_of_eating < philo->number_time_must_eat)
+        {
+            philo->number_of_eating++;
+            philo->each_one[0]++;
+            if (philo->each_one[0] == philo->nb_of_philo * philo->number_time_must_eat)
+            {
+                printf("done\n");
+                sem_post(philo->main);
+                break;
+            }
+        }
         sem_post(philo->fork);
         sem_post(philo->fork);
-        // pthread_mutex_unlock(&philo->fork[philo->r]);
-        // pthread_mutex_unlock(&philo->fork[philo->l]);
-        // if (philo->if_true == 1 && philo->number_of_eating == philo->number_time_must_eat)
-        //     break;
+        if (philo->if_true == 1 && philo->number_of_eating == philo->number_time_must_eat)
+            break;
         print_msg(philo, 6, philo->l, 0);
         print_msg(philo, 4, philo->l, 0);
         usleep(philo->time_to_sleep * 1000);
         print_msg(philo, 5, philo->l, 0);
         usleep(40);
     }
-    // printf("dsakljdklsajdklasjkldjsakldkljsdja\n");
     return (NULL);
 }
 
@@ -238,8 +247,7 @@ int main(int ac, char **av)
     check_arguments(ac, av);
     philo = get_args(ac, av, &thread, &semaphore);
     i = 0;
-    // lock
-    // pthread_mutex_lock(&philo[0].main[0]);
+    sem_wait(semaphore.main);
     gettimeofday(&starting_t, NULL);
     while (i < philo[0].nb_of_philo)
     {
@@ -254,10 +262,7 @@ int main(int ac, char **av)
         usleep(20);
         i++;
     }
-    while (1)
-        ;
-    // pthread_mutex_lock(&philo[0].main[0]);
+    sem_wait(semaphore.main);
     free_philo(philo, thread);
-    // pthread_mutex_unlock(&philo[0].main[0]);
     return (0);
 }

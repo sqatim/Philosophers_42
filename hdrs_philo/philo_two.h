@@ -6,7 +6,7 @@
 /*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:41:38 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/03 02:37:44 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/04 01:18:23 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <pthread.h>
 #include <sys/time.h>
 #include <semaphore.h>
+#include <fcntl.h>
 
 #define EMPTY 0
 #define FULL 1
@@ -44,19 +45,22 @@ typedef struct s_philosopher
     int *each_one;
     sem_t *fork;
     sem_t *print;
+    sem_t *main;
+    sem_t *die;
 
     pthread_t die_p;
 } t_philo;
 
 typedef struct s_semaphore
 {
-    sem_t fork;
-    sem_t print;
+    sem_t *fork;
+    sem_t *print;
+    sem_t *main;
+    sem_t *die;
 } t_sem;
 
 int ft_isdigit(int c);
 int ft_atoi(const char *str);
 void free_philo(t_philo *philo, pthread_t *thread);
-
 
 #endif

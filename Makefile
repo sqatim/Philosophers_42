@@ -21,7 +21,7 @@ SRC_PHILO_ONE_NAME=philo_one.c\
 SRC_PHILO_TWO_NAME=philo_two.c\
 					ft_atoi.c\
 					tools.c\
-					# free.c\
+					free.c\
 			
 SRC_PHILO_THREE_NAME=philo_three.c\
 

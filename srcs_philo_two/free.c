@@ -6,11 +6,11 @@
 /*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 15:03:41 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/04 01:43:09 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/04 01:48:05 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_one.h"
+#include "philo_two.h"
 
 void free_philo(t_philo *philo, pthread_t *thread)
 {
@@ -18,12 +18,11 @@ void free_philo(t_philo *philo, pthread_t *thread)
     int number;
 
     i = 0;
-    number = philo[0].nb_of_philo;
-    free(philo[0].fork);
+    sem_close(philo->die);
+    sem_close(philo->main);
+    sem_close(philo->print);
+    sem_close(philo->fork);
     free(philo[0].each_one);
-    free(philo[0].test_die_m);
-    free(philo[0].mutex);
-    free(philo[0].main);
     free(philo);
     free(thread);
 }

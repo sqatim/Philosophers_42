@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_one.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:43:16 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/03 17:31:06 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/04 01:10:36 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,9 +150,9 @@ void print_msg(t_philo *philo, int number, int x, int fork)
 {
 	struct timeval current_t;
 	long interval;
-	
-	if(pthread_mutex_lock(philo->mutex))
-		return ;
+
+	if (pthread_mutex_lock(philo->mutex))
+		return;
 	gettimeofday(&current_t, NULL);
 	interval = get_time(philo->starting_t_p);
 	if (number == 1)
@@ -184,14 +184,14 @@ void *ft_die(void *philosopher)
 	philo->starting_t_d = philo->starting_t_p;
 	while (1)
 	{
-		pthread_mutex_lock(&philo->test_die_m[philo->r]);
+		// pthread_mutex_lock(&philo->test_die_m[philo->r]);
+		pthread_mutex_lock(&philo->die[0]);
 		interval = get_time(philo->starting_t_d);
 		// pthread_mutex_lock(&philo->mutex[0]);
 		if (interval > philo->time_to_die)
-		{	
+		{
 			// puts("salam");
 			pthread_mutex_lock(philo->mutex);
-			pthread_mutex_lock(&philo->die[0]);
 			interval = get_time(philo->starting_t_p);
 			printf("%ld %d died\n", interval, philo->l + 1);
 			pthread_mutex_unlock(&philo->main[0]);
@@ -199,7 +199,9 @@ void *ft_die(void *philosopher)
 		}
 		// else
 		// pthread_mutex_unlock(&philo->mutex[0]);
-		pthread_mutex_unlock(&philo->test_die_m[philo->r]);
+		pthread_mutex_unlock(&philo->die[0]);
+
+		// pthread_mutex_unlock(&philo->test_die_m[philo->r]);
 		usleep(3000);
 	}
 	return (NULL);
@@ -215,13 +217,13 @@ void *routine(void *philosopher)
 	pthread_detach(philo->die_p);
 	while (1)
 	{
-		if(pthread_mutex_lock(&philo->fork[philo->r]))
+		if (pthread_mutex_lock(&philo->fork[philo->r]))
 			break;
 		print_msg(philo, 1, philo->l, philo->r);
-		if(pthread_mutex_lock(&philo->fork[philo->l]))
+		if (pthread_mutex_lock(&philo->fork[philo->l]))
 			break;
 		print_msg(philo, 2, philo->l, philo->l);
-		if(pthread_mutex_lock(&philo->test_die_m[philo->r]))
+		if (pthread_mutex_lock(&philo->test_die_m[philo->r]))
 			break;
 		print_msg(philo, 3, philo->l, 0);
 		pthread_mutex_unlock(&philo->test_die_m[philo->r]);
@@ -232,8 +234,8 @@ void *routine(void *philosopher)
 			philo->each_one[0]++;
 			if (philo->each_one[0] == philo->nb_of_philo * philo->number_time_must_eat)
 			{
-				pthread_mutex_unlock(&philo->main[0]);
 				printf("done\n");
+				pthread_mutex_unlock(&philo->main[0]);
 				break;
 			}
 		}
