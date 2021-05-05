@@ -6,7 +6,7 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:45:55 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/04 17:05:38 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/05 15:58:52 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,16 +103,14 @@ t_philo *get_args(int ac, char **av, pthread_t **thread, t_sem *semaphore)
     *thread = (pthread_t *)malloc(sizeof(pthread_t) * number);
     philo->each_one = (int *)malloc(sizeof(int));
     philo->each_one[0] = 0;
-    int err;
-    sem_unlink("print");
-    sem_unlink("main");
-    sem_unlink("die");
-    err = sem_unlink("/fork");
-    printf("[%i]",err);
-    semaphore->fork = sem_open("/sfork", O_CREAT | O_EXCL, S_IREAD | S_IWRITE, 5);
-    semaphore->print = sem_open("sprint",O_CREAT | O_EXCL, S_IREAD | S_IWRITE, 1);
-    semaphore->main = sem_open("smain", O_CREAT | O_EXCL, S_IREAD | S_IWRITE, 1);
-    semaphore->die = sem_open("die", O_CREAT | O_EXCL, S_IREAD | S_IWRITE, 1);
+    sem_unlink(FORK_S);
+    sem_unlink(PRINT_S);
+    sem_unlink(DIE_S);
+    sem_unlink(MAIN_S);
+    semaphore->fork = sem_open(FORK_S, O_CREAT, 077, number);
+    semaphore->print = sem_open(PRINT_S,O_CREAT, 077, 1);
+    semaphore->main = sem_open(DIE_S, O_CREAT, 077, 1);
+    semaphore->die = sem_open(MAIN_S, O_CREAT, 077, 1);
     // sem_init(&semaphore->print, 0, 1);
     i = 0;
     while (i < number)
@@ -198,7 +196,6 @@ void *ft_die(void *philosopher)
 void *routine(void *philosopher)
 {
     t_philo *philo;
-    struct timeval starting_t;
 
     philo = (t_philo *)philosopher;
     pthread_create(&philo->die_p, NULL, &ft_die, (void *)philo);

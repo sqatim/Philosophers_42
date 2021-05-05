@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_two.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:41:38 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/05 00:30:47 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/05 14:51:10 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,11 @@
 #include <semaphore.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+
+# define FORK_S "/fork"
+# define PRINT_S "/print"
+# define DIE_S "/die"
+# define MAIN_S "/main"
 
 typedef struct s_philosopher
 {
