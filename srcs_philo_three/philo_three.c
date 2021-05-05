@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_three.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:44:04 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/04 14:31:16 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/05 02:01:34 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,20 +193,18 @@ void *ft_die(void *philosopher)
     return (NULL);
 }
 
-void *routine(void *philosopher)
+void routine(t_philo *philo)
 {
-    t_philo *philo;
     struct timeval starting_t;
 
-    philo = (t_philo *)philosopher;
     pthread_create(&philo->die_p, NULL, &ft_die, (void *)philo);
     pthread_detach(philo->die_p);
     while (1)
     {
-        if(sem_wait(philo->fork))
+        if (sem_wait(philo->fork))
             break;
         print_msg(philo, 1, philo->l, philo->r);
-        if(sem_wait(philo->fork))
+        if (sem_wait(philo->fork))
             break;
         print_msg(philo, 2, philo->l, philo->l);
         print_msg(philo, 3, philo->l, 0);
@@ -232,7 +230,7 @@ void *routine(void *philosopher)
         print_msg(philo, 5, philo->l, 0);
         usleep(40);
     }
-    return (NULL);
+    exit(0);
 }
 
 int main(int ac, char **av)
@@ -242,6 +240,7 @@ int main(int ac, char **av)
     t_sem semaphore;
     struct timeval starting_t;
     int i;
+    int pid;
 
     check_arguments(ac, av);
     philo = get_args(ac, av, &thread, &semaphore);
@@ -256,12 +255,17 @@ int main(int ac, char **av)
     i = 0;
     while (i < philo->nb_of_philo)
     {
-        pthread_create(&thread[i], NULL, &routine, (void *)&philo[i]);
-        pthread_detach(thread[i]);
+        pid = fork();
+        if (pid == 0)
+        {
+            routine(&philo[i]);
+            exit(0);
+        }
         usleep(20);
         i++;
     }
     sem_wait(semaphore.main);
     free_philo(philo, thread);
+    printf("salam sahbi");
     return (0);
 }
