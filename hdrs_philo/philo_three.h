@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_three.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:41:25 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/05 23:12:22 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/06 17:14:17 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # define DIE_S "/die"
 # define MAIN_S "/main"
 # define EACH_S "/each"
+# define EAT_S "/eat"
 
 
 typedef struct s_philosopher
@@ -47,6 +48,7 @@ typedef struct s_philosopher
     sem_t *main;
     sem_t *die;
     sem_t *each;
+    sem_t *eat;
 
     pthread_t die_p;
 } t_philo;
@@ -58,6 +60,7 @@ typedef struct s_semaphore
     sem_t *main;
     sem_t *die;
     sem_t *each;
+    sem_t *eat;
 } t_sem;
 
 int ft_isdigit(int c);

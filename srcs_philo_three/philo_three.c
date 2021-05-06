@@ -6,7 +6,7 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:44:04 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/06 14:55:43 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/06 17:26:13 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,17 +110,19 @@ t_philo *get_args(int ac, char **av, pthread_t **thread, t_sem *semaphore)
     semaphore->print = sem_open(PRINT_S, O_CREAT, 077, 1);
     semaphore->main = sem_open(DIE_S, O_CREAT, 077, 1);
     semaphore->die = sem_open(MAIN_S, O_CREAT, 077, 1);
+    semaphore->eat = sem_open(EAT_S, O_CREAT, 077, 0);
     if (ac == 6)
         semaphore->each = sem_open(EACH_S, O_CREAT, 077, philo->number_time_must_eat);
     // sem_init(&semaphore->print, 0, 1);
     i = 0;
     while (i < number)
     {
-        // philo[i].fork = semaphore->fork;
-        // philo[i].print = semaphore->print;
-        // philo[i].main = semaphore->main;
-        // philo[i].die = semaphore->die;
-        if (i != 0)
+        philo[i].fork = semaphore->fork;
+        philo[i].print = semaphore->print;
+        philo[i].main = semaphore->main;
+        philo[i].die = semaphore->die;
+        philo[i].eat = semaphore->eat;
+        if (ac == 6 && i != 0)
             philo[i].each_one = philo->each_one;
         i++;
     }
@@ -184,6 +186,7 @@ void *ft_die(void *philosopher)
             interval = get_time(philo->starting_t_p);
             printf("%ld %d died\n", interval, philo->nbr + 1);
             sem_post(philo->main);
+            // exit(0);
             break;
         }
         if (sem_post(philo->die))
@@ -196,10 +199,6 @@ void *ft_die(void *philosopher)
 void routine(t_philo *philo)
 {
     struct timeval starting_t;
-    philo->fork = sem_open(FORK_S, 0);
-    philo->print = sem_open(PRINT_S, 0);
-    philo->main = sem_open(DIE_S, 0);
-    philo->die = sem_open(MAIN_S, 0);
     pthread_create(&philo->die_p, NULL, &ft_die, (void *)philo);
     pthread_detach(philo->die_p);
     while (1)
@@ -219,6 +218,7 @@ void routine(t_philo *philo)
         if (philo->if_true == 1 && philo->number_of_eating < philo->number_time_must_eat)
         {
             philo->number_of_eating++;
+            sem_post(philo->eat);
             // philo->each_one[0]++;
             // if (philo->each_one[0] == philo->nb_of_philo * philo->number_time_must_eat)
             // {
@@ -236,7 +236,34 @@ void routine(t_philo *philo)
         print_msg(philo, 5, philo->nbr);
         usleep(40);
     }
-    return ;
+    return;
+}
+
+void *ft_increment(void *philosopher)
+{
+    int k;
+    t_philo			*philo;
+    
+    philo = (t_philo *)philosopher;
+    k = 0;
+    while (1)
+    {
+        if(sem_wait(philo->eat))
+            break;
+        if (philo->if_true == 1 && k < philo->nb_of_philo * philo->number_time_must_eat)
+        {
+            k++;
+            if (k == philo->nb_of_philo * philo->number_time_must_eat)
+            {
+                sem_wait(philo->die);
+                sem_wait(philo->print);
+                printf("done\n");
+                sem_post(philo->main);
+                break;
+            }
+        }
+    }
+    return (NULL);
 }
 
 int main(int ac, char **av)
@@ -246,7 +273,7 @@ int main(int ac, char **av)
     t_sem semaphore;
     struct timeval starting_t;
     int i;
-    int pid[2];
+    int pid;
 
     check_arguments(ac, av);
     philo = get_args(ac, av, &thread, &semaphore);
@@ -259,11 +286,12 @@ int main(int ac, char **av)
         i++;
     }
     i = 0;
-    int j = 0;
+    pthread_create(&philo->die_p, NULL, &ft_increment, (void *)&philo[0]);
+    pthread_detach(philo->die_p);
     while (i < philo->nb_of_philo)
     {
-        pid[i] = fork();
-        if (pid[i] == 0)
+        pid= fork();
+        if (pid == 0)
         {
             routine(&philo[i]);
             exit(0);
@@ -272,9 +300,12 @@ int main(int ac, char **av)
         i++;
     }
     i = 0;
-    waitpid(pid[0], NULL, 0);
-    waitpid(pid[1], NULL, 0);
-    // sem_wait(semaphore.main);
+
+    // waitpid(pid[0], NULL, 0);
+    // waitpid(pid[1], NULL, 0);
+
+    sem_wait(semaphore.main);
+    // exit(0);
     // while (i < philo->nb_of_philo)
     // {
     //     printf("pid ==> %d\n", pid);
@@ -282,7 +313,7 @@ int main(int ac, char **av)
     //     i++;
     // }
     // sem_post(semaphore.main);
-    puts("=========> done!");
+    // puts("=========> done!");
     // free_philo(philo, thread);
     // printf("salam sahbi");
     return (0);
