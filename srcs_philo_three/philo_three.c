@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_three.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:44:04 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/05 23:59:46 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/06 14:55:43 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,10 +205,7 @@ void routine(t_philo *philo)
     while (1)
     {
         if (sem_wait(philo->fork))
-        {
             break;
-        }
-        puts("ssssssssssssssssssss");
         print_msg(philo, 1, philo->nbr);
         if (sem_wait(philo->fork))
             break;
@@ -216,9 +213,9 @@ void routine(t_philo *philo)
         if (sem_wait(philo->die))
             break;
         print_msg(philo, 3, philo->nbr);
-        usleep(philo->time_to_eat * 1000);
         if (sem_post(philo->die))
             break;
+        usleep(philo->time_to_eat * 1000);
         if (philo->if_true == 1 && philo->number_of_eating < philo->number_time_must_eat)
         {
             philo->number_of_eating++;
@@ -233,19 +230,13 @@ void routine(t_philo *philo)
         sem_post(philo->fork);
         sem_post(philo->fork);
         if (philo->if_true == 1 && philo->number_of_eating == philo->number_time_must_eat)
-        {
             break;
-            // sem_wait()
-        }
-        print_msg(philo, 6, philo->nbr);
         print_msg(philo, 4, philo->nbr);
         usleep(philo->time_to_sleep * 1000);
         print_msg(philo, 5, philo->nbr);
-        puts("salam");
         usleep(40);
     }
-    // return;
-    exit(0);
+    return ;
 }
 
 int main(int ac, char **av)
@@ -255,7 +246,7 @@ int main(int ac, char **av)
     t_sem semaphore;
     struct timeval starting_t;
     int i;
-    int pid;
+    int pid[2];
 
     check_arguments(ac, av);
     philo = get_args(ac, av, &thread, &semaphore);
@@ -271,21 +262,19 @@ int main(int ac, char **av)
     int j = 0;
     while (i < philo->nb_of_philo)
     {
-        pid = fork();
-        if (pid == 0)
+        pid[i] = fork();
+        if (pid[i] == 0)
         {
-            // puts("hii");
             routine(&philo[i]);
-            // puts("said");
             exit(0);
         }
-
-        // usleep(20);
+        usleep(40);
         i++;
     }
     i = 0;
-    waitpid(-1, NULL, 0);
-    sem_wait(semaphore.main);
+    waitpid(pid[0], NULL, 0);
+    waitpid(pid[1], NULL, 0);
+    // sem_wait(semaphore.main);
     // while (i < philo->nb_of_philo)
     // {
     //     printf("pid ==> %d\n", pid);
@@ -294,7 +283,7 @@ int main(int ac, char **av)
     // }
     // sem_post(semaphore.main);
     puts("=========> done!");
-    free_philo(philo, thread);
+    // free_philo(philo, thread);
     // printf("salam sahbi");
     return (0);
 }
