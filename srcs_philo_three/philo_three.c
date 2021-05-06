@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_three.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:44:04 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/05 17:45:15 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/05 23:59:46 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,6 @@ void print_msg(t_philo *philo, int number, int nbr)
 {
     struct timeval current_t;
     long interval;
-
     sem_wait(philo->print);
     gettimeofday(&current_t, NULL);
     interval = get_time(philo->starting_t_p);
@@ -205,9 +204,11 @@ void routine(t_philo *philo)
     pthread_detach(philo->die_p);
     while (1)
     {
-
         if (sem_wait(philo->fork))
+        {
             break;
+        }
+        puts("ssssssssssssssssssss");
         print_msg(philo, 1, philo->nbr);
         if (sem_wait(philo->fork))
             break;
@@ -240,9 +241,11 @@ void routine(t_philo *philo)
         print_msg(philo, 4, philo->nbr);
         usleep(philo->time_to_sleep * 1000);
         print_msg(philo, 5, philo->nbr);
+        puts("salam");
         usleep(40);
     }
-    return;
+    // return;
+    exit(0);
 }
 
 int main(int ac, char **av)
@@ -271,20 +274,24 @@ int main(int ac, char **av)
         pid = fork();
         if (pid == 0)
         {
+            // puts("hii");
             routine(&philo[i]);
             // puts("said");
             exit(0);
         }
-        usleep(20);
+
+        // usleep(20);
         i++;
     }
-    //  i = 0;
-    // while(i < philo->nb_of_philo)
+    i = 0;
+    waitpid(-1, NULL, 0);
+    sem_wait(semaphore.main);
+    // while (i < philo->nb_of_philo)
     // {
-    //     waitpid(pid,NULL,0);
+    //     printf("pid ==> %d\n", pid);
+    //     waitpid(pid, NULL, 0);
     //     i++;
     // }
-    sem_wait(semaphore.main);
     // sem_post(semaphore.main);
     puts("=========> done!");
     free_philo(philo, thread);

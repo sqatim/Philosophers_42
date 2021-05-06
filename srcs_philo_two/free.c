@@ -6,23 +6,19 @@
 /*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 15:03:41 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/04 01:48:05 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/06 01:46:26 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_two.h"
 
-void free_philo(t_philo *philo, pthread_t *thread)
+void free_philo(t_philo *philo, pthread_t *thread, t_sem *semaphore)
 {
-    int i;
-    int number;
-
-    i = 0;
-    sem_close(philo->die);
-    sem_close(philo->main);
-    sem_close(philo->print);
-    sem_close(philo->fork);
+    sem_close(semaphore->main);
+    sem_close(semaphore->fork);
+    sem_close(semaphore->print);
     free(philo[0].each_one);
     free(philo);
     free(thread);
+    sem_close(semaphore->die);
 }

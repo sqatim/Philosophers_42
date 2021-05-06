@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_two.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:41:38 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/05 14:51:10 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/06 00:34:31 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-# define FORK_S "/fork"
-# define PRINT_S "/print"
-# define DIE_S "/die"
-# define MAIN_S "/main"
+#define FORK_S "/fork"
+#define PRINT_S "/print"
+#define DIE_S "/die"
+#define MAIN_S "/main"
 
 typedef struct s_philosopher
 {
@@ -59,6 +59,7 @@ typedef struct s_semaphore
 
 int ft_isdigit(int c);
 int ft_atoi(const char *str);
-void free_philo(t_philo *philo, pthread_t *thread);
+// void free_philo(t_philo *philo, pthread_t *thread);
+void free_philo(t_philo *philo, pthread_t *thread, t_sem *semaphore);
 
 #endif
