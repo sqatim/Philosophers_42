@@ -1,36 +1,37 @@
-NAME= philo_one
+NAME= philo_three
 
-SRC_PHILO_ONE_PATH= sources
+SRC_PATH= sources
 
-HDR_PHILO_PATH= header
+HDR_PATH= header
 
-OBJ_PHILO_ONE_PATH= obj_philo_one
+OBJ_PATH= objects
 
-SRC_PHILO_ONE_NAME=philo_one.c\
-					tools.c\
+SRC_NAME=philo_three.c\
 					ft_atoi.c\
+					tools.c\
 					free.c\
 					affectation.c\
 					print.c\
 
-HDR_PHILO_ONE_NAME=philo_one.h 
+HDR_NAME=philo_three.h 
 
-OBJ_PHILO_ONE_NAME= $(SRC_PHILO_ONE_NAME:.c=.o)
+OBJ_NAME= $(SRC_NAME:.c=.o)
 
-OBJ_PHILO_ONE= $(addprefix $(OBJ_PHILO_ONE_PATH)/,$(OBJ_PHILO_ONE_NAME))
-SRC_PHILO_ONE= $(addprefix $(SRC_PHILO_ONE_PATH)/,$(SRC_PHILO_ONE_NAME))
-HDR_PHILO_ONE= $(addprefix $(HDR_PHILO_PATH)/,$(HDR_PHILO_ONE_NAME))
+OBJ_PHILO_THREE= $(addprefix $(OBJ_PATH)/,$(OBJ_NAME))
+SRC_PHILO_THREE= $(addprefix $(SRC_PATH)/,$(SRC_NAME))
+HDR_PHILO_THREE= $(addprefix $(HDR_PATH)/,$(HDR_NAME))
 
 FLAGS= -Wall -Wextra -Werror
 
-H_PHILO_FLAG= -I $(HDR_PHILO_PATH)
+H_PHILO_FLAG= -I $(HDR_PATH)
+
 
 COMP= gcc
 
 all: $(NAME) 
 
-$(NAME) : $(OBJ_PHILO_ONE)
-	@$(COMP) -g $(H_PHILO_FLAG) $(OBJ_PHILO_ONE) -lpthread -o $@
+$(NAME) : $(OBJ_PHILO_THREE)
+	@$(COMP) -g $(H_PHILO_FLAG) $(OBJ_PHILO_THREE)  -lpthread -o $@
 	@echo "										    Made by : \033[1;91mSqatim\033[m"
 	@echo "																					  "
 	@echo " _____  _    _ _____ _      ____   _____  ____  _____  _    _ ______ _____   _____ " 
@@ -42,12 +43,12 @@ $(NAME) : $(OBJ_PHILO_ONE)
 	@echo "																					  "
 	@echo "								   Compilation of : $(NAME): \033[1;32mOK\033[m"
 
-$(OBJ_PHILO_ONE_PATH)/%.o:  $(SRC_PHILO_ONE_PATH)/%.c $(HDR_PHILO_ONE)
-	@mkdir -p $(OBJ_PHILO_ONE_PATH) 
+$(OBJ_PATH)/%.o:  $(SRC_PATH)/%.c $(HDR_PHILO_THREE)
+	@mkdir -p $(OBJ_PATH) 
 	@$(COMP) -g $(FLAGS) $(H_PHILO_FLAG) -g -o $@ -c $<
 
 clean:
-	@rm -rf $(OBJ_PHILO_ONE_PATH)
+	@rm -rf $(OBJ_PATH)
 
 fclean: clean
 	@rm -rf $(NAME)

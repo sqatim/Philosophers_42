@@ -1,29 +1,29 @@
 NAME= philo_one
 
-SRC_PHILO_ONE_PATH= sources
+SRC_PATH= sources
 
-HDR_PHILO_PATH= header
+HDR_PATH= header
 
-OBJ_PHILO_ONE_PATH= obj_philo_one
+OBJ_PATH= objects
 
-SRC_PHILO_ONE_NAME=philo_one.c\
+SRC_NAME=philo_one.c\
 					tools.c\
 					ft_atoi.c\
 					free.c\
 					affectation.c\
 					print.c\
 
-HDR_PHILO_ONE_NAME=philo_one.h 
+HDR_NAME=philo_one.h 
 
-OBJ_PHILO_ONE_NAME= $(SRC_PHILO_ONE_NAME:.c=.o)
+OBJ_NAME= $(SRC_NAME:.c=.o)
 
-OBJ_PHILO_ONE= $(addprefix $(OBJ_PHILO_ONE_PATH)/,$(OBJ_PHILO_ONE_NAME))
-SRC_PHILO_ONE= $(addprefix $(SRC_PHILO_ONE_PATH)/,$(SRC_PHILO_ONE_NAME))
-HDR_PHILO_ONE= $(addprefix $(HDR_PHILO_PATH)/,$(HDR_PHILO_ONE_NAME))
+OBJ_PHILO_ONE= $(addprefix $(OBJ_PATH)/,$(OBJ_NAME))
+SRC_PHILO_ONE= $(addprefix $(SRC_PATH)/,$(SRC_NAME))
+HDR_PHILO_ONE= $(addprefix $(HDR_PATH)/,$(HDR_NAME))
 
 FLAGS= -Wall -Wextra -Werror
 
-H_PHILO_FLAG= -I $(HDR_PHILO_PATH)
+H_PHILO_FLAG= -I $(HDR_PATH)
 
 COMP= gcc
 
@@ -42,12 +42,12 @@ $(NAME) : $(OBJ_PHILO_ONE)
 	@echo "																					  "
 	@echo "								   Compilation of : $(NAME): \033[1;32mOK\033[m"
 
-$(OBJ_PHILO_ONE_PATH)/%.o:  $(SRC_PHILO_ONE_PATH)/%.c $(HDR_PHILO_ONE)
-	@mkdir -p $(OBJ_PHILO_ONE_PATH) 
+$(OBJ_PATH)/%.o:  $(SRC_PATH)/%.c $(HDR_PHILO_ONE)
+	@mkdir -p $(OBJ_PATH) 
 	@$(COMP) -g $(FLAGS) $(H_PHILO_FLAG) -g -o $@ -c $<
 
 clean:
-	@rm -rf $(OBJ_PHILO_ONE_PATH)
+	@rm -rf $(OBJ_PATH)
 
 fclean: clean
 	@rm -rf $(NAME)
