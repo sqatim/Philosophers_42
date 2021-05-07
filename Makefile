@@ -1,4 +1,7 @@
-NAME= philo_one
+NAME= philo_one\
+		philo_two\
+		philo_three\
+
 
 SRC_PHILO_ONE_PATH= srcs_philo_one
 SRC_PHILO_TWO_PATH= srcs_philo_two
@@ -17,16 +20,22 @@ SRC_PHILO_ONE_NAME=philo_one.c\
 					tools.c\
 					ft_atoi.c\
 					free.c\
+					affectation.c\
+					print.c\
 
 SRC_PHILO_TWO_NAME=philo_two.c\
 					ft_atoi.c\
 					tools.c\
 					free.c\
+					affectation.c\
+					print.c\
 			
 SRC_PHILO_THREE_NAME=philo_three.c\
 					ft_atoi.c\
 					tools.c\
 					free.c\
+					affectation.c\
+					print.c\
 
 
 HDR_PHILO_ONE_NAME=philo_one.h 
@@ -59,15 +68,9 @@ H_PHILO_FLAG= -I $(HDR_PHILO_PATH)
 
 COMP= gcc
 
-all: $(NAME) 
+all: $(NAME) one two three
 
-$(NAME) : $(OBJ_PHILO_ONE) $(OBJ_PHILO_TWO) $(OBJ_PHILO_THREE)
-	@rm -rf $(NAME)
-	@rm -rf philo_two
-	@rm -rf philo_three
-	@$(COMP) -g $(H_PHILO_FLAG) $(OBJ_PHILO_ONE) -lpthread -o $@
-	@$(COMP) -g $(H_PHILO_FLAG) $(OBJ_PHILO_TWO)  -lpthread -o philo_two
-	@$(COMP) -g $(H_PHILO_FLAG) $(OBJ_PHILO_THREE)  -lpthread -o philo_three
+$(NAME) : 
 	@echo "										    Made by : \033[1;91mSqatim\033[m"
 	@echo "																					  "
 	@echo " _____  _    _ _____ _      ____   _____  ____  _____  _    _ ______ _____   _____ " 
@@ -79,29 +82,25 @@ $(NAME) : $(OBJ_PHILO_ONE) $(OBJ_PHILO_TWO) $(OBJ_PHILO_THREE)
 	@echo "																					  "
 	@echo "								   Compilation of : philosophers: \033[1;32mOK\033[m"
 
+one: 
+	@make -sC $(SRC_PHILO_ONE_PATH)
 
-$(OBJ_PHILO_ONE_PATH)/%.o:  $(SRC_PHILO_ONE_PATH)/%.c $(HDR_PHILO_ONE)
-	@mkdir -p $(OBJ_PHILO_ONE_PATH) 
-	@$(COMP) -g $(FLAGS) $(H_PHILO_FLAG) -g -o $@ -c $<
+two: 
+	@make -sC $(SRC_PHILO_TWO_PATH)
 
-$(OBJ_PHILO_TWO_PATH)/%.o:  $(SRC_PHILO_TWO_PATH)/%.c $(HDR_PHILO_TWO)
-	@mkdir -p $(OBJ_PHILO_TWO_PATH) 
-	@$(COMP) -g $(FLAGS) $(H_PHILO_FLAG) -g -o $@ -c $<
-
-$(OBJ_PHILO_THREE_PATH)/%.o:  $(SRC_PHILO_THREE_PATH)/%.c $(HDR_PHILO_THREE)
-	@mkdir -p $(OBJ_PHILO_THREE_PATH) 
-	@$(COMP) -g $(FLAGS) $(H_PHILO_FLAG) -g -o $@ -c $<
+three: 
+	@make -sC $(SRC_PHILO_THREE_PATH)
 
 clean:
-	@rm -rf $(OBJ_PHILO_ONE_PATH)
-	@rm -rf $(OBJ_PHILO_TWO_PATH)
-	@rm -rf $(OBJ_PHILO_THREE_PATH)
+	@make clean -C $(SRC_PHILO_ONE_PATH)
+	@make clean -C $(SRC_PHILO_TWO_PATH)
+	@make clean -C $(SRC_PHILO_THREE_PATH)
 	@echo "\033[1;33m>> all objects files are deleted.\033[0m" 
 
 fclean: clean
-	@rm -rf philo_one
-	@rm -rf philo_two
-	@rm -rf philo_three
+	@make fclean -C $(SRC_PHILO_ONE_PATH)
+	@make fclean -C $(SRC_PHILO_TWO_PATH)
+	@make fclean -C $(SRC_PHILO_THREE_PATH)
 	@echo "\033[0;31m>> all obbjects are deleted.\033[0m" 
 
 re : fclean all

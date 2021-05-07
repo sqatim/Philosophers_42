@@ -6,24 +6,20 @@
 /*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/01 15:03:41 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/04 01:43:09 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/07 02:29:33 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_one.h"
 
-void free_philo(t_philo *philo, pthread_t *thread)
+void	free_philo(t_philo *philo, pthread_t *thread)
 {
-    int i;
-    int number;
-
-    i = 0;
-    number = philo[0].nb_of_philo;
-    free(philo[0].fork);
-    free(philo[0].each_one);
-    free(philo[0].test_die_m);
-    free(philo[0].mutex);
-    free(philo[0].main);
-    free(philo);
-    free(thread);
+	free(philo->fork);
+	if(philo->if_true == 1)
+		free(philo->each_one);
+	free(philo->test_die_m);
+	free(philo->mutex);
+	free(philo->main);
+	free(philo);
+	free(thread);
 }

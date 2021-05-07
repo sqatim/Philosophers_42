@@ -6,7 +6,7 @@
 /*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 15:52:23 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/03 02:36:10 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/07 00:15:47 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int	check(int counter, int sign, int result)
 	return (result * sign);
 }
 
-int	ft_atoi(const char *str)
+int			ft_atoi(const char *str)
 {
 	int	i;
 	int	sign;
