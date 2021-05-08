@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   affectation.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/07 01:33:07 by ragegodthor       #+#    #+#             */
-/*   Updated: 2021/05/07 16:29:41 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/08 04:28:53 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,13 @@ t_sem	initialisation_semaphore(int number)
 	sem_unlink(PRINT_S);
 	sem_unlink(DIE_S);
 	sem_unlink(MAIN_S);
+	sem_unlink(INCREMENT_S);
+	sem_unlink(BLOCK_S);
 	semaphore.fork = sem_open(FORK_S, O_CREAT, 0777, number);
 	semaphore.print = sem_open(PRINT_S, O_CREAT, 0777, 1);
 	semaphore.main = sem_open(MAIN_S, O_CREAT, 0777, 1);
 	semaphore.die = sem_open(DIE_S, O_CREAT, 0777, 1);
+	semaphore.block = sem_open(BLOCK_S, O_CREAT, 0777, 1);
+	semaphore.increment = sem_open(INCREMENT_S, O_CREAT, 0777, 1);
 	return (semaphore);
 }

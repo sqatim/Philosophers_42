@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_two.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:45:55 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/07 17:41:56 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/08 05:15:35 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,25 +23,15 @@ void	*ft_die(void *philosopher)
 	philo->starting_t_d = philo->starting_t_p;
 	while (1)
 	{
-		if (sem_wait(philo->die))
+		if (!check_semaphore(philo, philo->die, 1))
 			break ;
 		interval = get_time(philo->starting_t_d);
-		if (interval > philo->time_to_die)
+		if (philo->die && interval > philo->time_to_die)
 		{
-			if (philo->reaching)
-			{
-				// puts("=====> salam <=====");	
-				sem_post(philo->die);
-				break ;
-			}
-			sem_wait(philo->print);
-			interval = get_time(philo->starting_t_p);
-			// puts("sddsadsa");
-			printf("\033[1;31m%ld %d died\033[0m\n", interval, philo->nbr + 1);
-			sem_post(philo->main);
+			exit_die(philo);
 			break ;
 		}
-		if (sem_post(philo->die))
+		if (!check_semaphore(philo, philo->die, 2))
 			break ;
 		usleep(3000);
 	}
@@ -50,18 +40,21 @@ void	*ft_die(void *philosopher)
 
 int	ft_eating(t_philo *philo)
 {
-	if (sem_wait(philo->fork))
+	if (!check_semaphore(philo, philo->fork, 1))
 		return (0);
-	print_msg(philo, 1, philo->nbr);
-	if (sem_wait(philo->fork))
+	if (!print_msg(philo, 1, philo->nbr))
 		return (0);
-	print_msg(philo, 1, philo->nbr);
-	if (sem_wait(philo->die))
+	if (!check_semaphore(philo, philo->fork, 1))
 		return (0);
-	print_msg(philo, 2, philo->nbr);
-	if (sem_post(philo->die))
+	if (!print_msg(philo, 1, philo->nbr))
+		return (0);
+	if (!check_semaphore(philo, philo->die, 1))
+		return (0);
+	if (!print_msg(philo, 2, philo->nbr))
 		return (0);
 	usleep(philo->time_to_eat * 1000);
+	if (!check_semaphore(philo, philo->die, 2))
+		return (0);
 	return (1);
 }
 
@@ -78,16 +71,13 @@ void	*routine(void *philosopher)
 			break ;
 		if (reaching_nbr_of_eating(philo))
 			break ;
-		if (sem_post(philo->fork))
+		if (!puts_forks(philo))
 			break ;
-		if (sem_post(philo->fork))
+		if(!print_msg(philo, 3, philo->nbr))
 			break ;
-		if (philo->if_true == 1 && \
-			philo->number_of_eating == philo->number_time_must_eat)
-			break ;
-		print_msg(philo, 3, philo->nbr);
 		usleep(philo->time_to_sleep * 1000);
-		print_msg(philo, 4, philo->nbr);
+		if(!print_msg(philo, 4, philo->nbr))
+			break ;
 		usleep(40);
 	}
 	return (NULL);
@@ -132,6 +122,5 @@ int	main(int ac, char **av)
 		sem_wait(semaphore.main);
 	}
 	free_philo(philo, thread);
-	getchar();
 	return (0);
 }

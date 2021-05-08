@@ -7,11 +7,12 @@ HDR_PATH= header
 OBJ_PATH= objects
 
 SRC_NAME=philo_two.c\
-					ft_atoi.c\
-					tools.c\
-					free.c\
-					affectation.c\
-					print.c\
+		ft_atoi.c\
+		tools.c\
+		free.c\
+		affectation.c\
+		print.c\
+		tools2.c\
 			
 HDR_NAME=philo_two.h 
 
@@ -21,7 +22,7 @@ OBJ_PHILO_TWO= $(addprefix $(OBJ_PATH)/,$(OBJ_NAME))
 SRC_PHILO_TWO= $(addprefix $(SRC_PATH)/,$(SRC_NAME))
 HDR_PHILO_TWO= $(addprefix $(HDR_PATH)/,$(HDR_NAME))
 
-FLAGS= -Wall -Wextra -Werror
+# FLAGS= -Wall -Wextra -Werror
 
 H_PHILO_FLAG= -I $(HDR_PATH)
 

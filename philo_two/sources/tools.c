@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tools.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 15:36:57 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/07 17:50:57 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/08 04:55:29 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,11 @@ t_philo	*get_args(int ac, char **av, pthread_t **thread, t_sem *semaphore)
 		philo[i].fork = semaphore->fork;
 		philo[i].print = semaphore->print;
 		philo[i].main = semaphore->main;
+		philo[i].increment = semaphore->increment;
+		philo[i].block = semaphore->block;
 		sem_unlink(DIE_S);
 		philo[i].die = sem_open(DIE_S, O_CREAT, 0777, 1);
+		// printf("adress ==> %p\n",philo[i].die);
 		if (philo->if_true == 1 && i != 0)
 			philo[i].each_one = philo->each_one;
 		i++;
@@ -73,9 +76,11 @@ int	check_number(char *str)
 
 int	reaching_nbr_of_eating(t_philo *philo)
 {
-	if (philo->if_true == 1 && \
+	if (philo->each_one && philo->if_true == 1 && \
 		philo->number_of_eating < philo->number_time_must_eat)
 	{
+		if (!check_semaphore(philo, philo->increment, 1))
+			return (0);
 		philo->number_of_eating++;
 		if((philo->if_true == 1 && \
 			philo->number_of_eating == philo->number_time_must_eat))
@@ -83,11 +88,9 @@ int	reaching_nbr_of_eating(t_philo *philo)
 		philo->each_one[0]++;
 		if (philo->each_one[0] == \
 			philo->nb_of_philo * philo->number_time_must_eat)
-		{
-			printf("\033[0m==> Done \U0001F600 \U0001F600\n");
-			sem_post(philo->main);
-			return (1);
-		}
+			return (exit_reach(philo));
+		if (!check_semaphore(philo, philo->increment, 2))
+			return (0);
 	}
 	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/07 01:35:51 by ragegodthor       #+#    #+#             */
-/*   Updated: 2021/05/07 13:49:40 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/08 04:33:10 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,13 @@ void	check_arguments(int ac, char **av)
 	}
 }
 
-void	print_msg(t_philo *philo, int number, int nbr)
+int	print_msg(t_philo *philo, int number, int nbr)
 {
 	struct timeval	current_t;
 	long			interval;
 
-	if (sem_wait(philo->print))
-		return ;
+	if (!check_semaphore(philo, philo->print, 1))
+		return (0);
 	gettimeofday(&current_t, NULL);
 	interval = get_time(philo->starting_t_p);
 	if (number == 1)
@@ -72,6 +72,7 @@ void	print_msg(t_philo *philo, int number, int nbr)
 		printf("\033[1;36m%ld %d is sleeping\n", interval, nbr + 1);
 	else if (number == 4)
 		printf("\033[0m%ld %d is thinking\n", interval, nbr + 1);
-	if (sem_post(philo->print))
-		return ;
+	if (!check_semaphore(philo, philo->print, 2))
+		return (0);
+	return (1);
 }
