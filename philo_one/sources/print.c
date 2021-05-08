@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/07 01:22:21 by ragegodthor       #+#    #+#             */
-/*   Updated: 2021/05/07 15:52:13 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/08 02:14:57 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@ void	print_error(int error)
 	exit(1);
 }
 
-void	print_msg(t_philo *philo, int number, int x)
+int	print_msg(t_philo *philo, int number, int x)
 {
 	struct timeval	current_t;
 	long			interval;
 
-	if (pthread_mutex_lock(philo->mutex))
-		return ;
+	if (!check_mutex(philo, philo->print, philo->print, 1))
+		return (0);
 	gettimeofday(&current_t, NULL);
 	interval = get_time(philo->starting_t_p);
 	if (number == 1)
@@ -51,8 +51,9 @@ void	print_msg(t_philo *philo, int number, int x)
 		printf("\033[1;36m%ld %d is sleeping\n", interval, x + 1);
 	else if (number == 4)
 		printf("\033[0m%ld %d is thinking\n", interval, x + 1);
-	if (pthread_mutex_unlock(philo->mutex))
-		return ;
+	if (!check_mutex(philo, philo->print, philo->print, 2))
+		return (0);
+	return (1);
 }
 
 void	check_arguments(int ac, char **av)

@@ -12,6 +12,7 @@ SRC_NAME=philo_one.c\
 					free.c\
 					affectation.c\
 					print.c\
+					tools2.c
 
 HDR_NAME=philo_one.h 
 

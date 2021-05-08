@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   affectation.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/07 01:16:35 by ragegodthor       #+#    #+#             */
-/*   Updated: 2021/05/07 17:45:41 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/08 02:28:33 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@ t_philo	*allocation(int ac, char **av, pthread_t **thread)
 	philo->each_one[0] = 0;
 	philo->fork = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * number);
 	philo->die = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * number);
-	philo->mutex = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
+	philo->print = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
+	philo->block = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
+	philo->increment = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
 	philo->main = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
 	return (philo);
 }
@@ -62,14 +64,17 @@ t_philo	*initialisation_mutex(t_philo *philo, int number)
 	int	i;
 
 	i = 1;
-	pthread_mutex_init(philo->mutex, NULL);
+	pthread_mutex_init(philo->print, NULL);
+	pthread_mutex_init(philo->block, NULL);
 	pthread_mutex_init(philo->main, NULL);
+	pthread_mutex_init(philo->increment, NULL);
 	while (i < number)
 	{
 		philo[i].fork = philo->fork;
 		philo[i].die = philo->die;
-		philo[i].mutex = philo->mutex;
-		philo[i].die = philo->die;
+		philo[i].print = philo->print;
+		philo[i].block = philo->block;
+		philo[i].increment = philo->increment;
 		philo[i].main = philo->main;
 		if (philo->if_true == 1)
 			philo[i].each_one = philo->each_one;

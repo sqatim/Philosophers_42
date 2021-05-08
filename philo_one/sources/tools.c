@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tools.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 15:36:57 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/07 17:45:27 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/08 02:40:56 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,21 +64,21 @@ int	check_number(char *str)
 
 int	reaching_nbr_of_eating(t_philo *philo)
 {
-	if (philo->if_true == 1 && \
+	if (philo && philo->if_true == 1 && \
 		philo->number_of_eating < philo->number_time_must_eat)
 	{
+		if (!check_mutex(philo, philo->increment, philo->increment, 1))
+			return (0);
 		philo->number_of_eating++;
-		if((philo->if_true == 1 && \
+		if ((philo->if_true == 1 && \
 			philo->number_of_eating == philo->number_time_must_eat))
 			philo->reaching = 1;
 		philo->each_one[0]++;
 		if (philo->each_one[0] == \
 			philo->nb_of_philo * philo->number_time_must_eat)
-		{
-			printf("\033[0m==> Done \U0001F600 \U0001F600\n");
-			pthread_mutex_unlock(philo->main);
-			return (1);
-		}
+			return (exit_reach(philo));
+		if (!check_mutex(philo, philo->increment, philo->increment, 2))
+			return (0);
 	}
 	return (0);
 }

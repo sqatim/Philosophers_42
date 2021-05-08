@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_one.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:43:16 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/07 17:48:59 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/08 02:43:48 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,19 +23,16 @@ void	*ft_die(void *philosopher)
 	philo->starting_t_d = philo->starting_t_p;
 	while (1)
 	{
-		pthread_mutex_lock(&philo->die[philo->l]);
+		if (!check_mutex(philo, philo->die, &philo->die[philo->l], 1))
+			break ;
 		interval = get_time(philo->starting_t_d);
-		if (interval > philo->time_to_die)
+		if (philo->die && interval > philo->time_to_die)
 		{
-			if (philo->reaching)
-				break ;
-			pthread_mutex_lock(philo->mutex);
-			interval = get_time(philo->starting_t_p);
-			printf("\033[1;31m%ld %d died\033[0m\n", interval, philo->l + 1);
-			pthread_mutex_unlock(philo->main);
+			exit_die(philo);
 			break ;
 		}
-		pthread_mutex_unlock(&philo->die[philo->l]);
+		if (!check_mutex(philo, philo->die, &philo->die[philo->l], 2))
+			break ;
 		usleep(3000);
 	}
 	return (NULL);
@@ -43,17 +40,21 @@ void	*ft_die(void *philosopher)
 
 int	ft_eating(t_philo *philo)
 {
-	if (pthread_mutex_lock(&philo->fork[philo->r]))
+	if (!check_mutex(philo, philo->fork, &philo->fork[philo->r], 1))
 		return (0);
-	print_msg(philo, 1, philo->l);
-	if (pthread_mutex_lock(&philo->fork[philo->l]))
+	if (!print_msg(philo, 1, philo->l))
 		return (0);
-	print_msg(philo, 1, philo->l);
-	if (pthread_mutex_lock(&philo->die[philo->l]))
+	if (!check_mutex(philo, philo->fork, &philo->fork[philo->l], 1))
 		return (0);
-	print_msg(philo, 2, philo->l);
+	if (!print_msg(philo, 1, philo->l))
+		return (0);
+	if (!check_mutex(philo, philo->die, &philo->die[philo->l], 1))
+		return (0);
+	if (!print_msg(philo, 2, philo->l))
+		return (0);
 	usleep(philo->time_to_eat * 1000);
-	pthread_mutex_unlock(&philo->die[philo->l]);
+	if (!check_mutex(philo, philo->die, &philo->die[philo->l], 2))
+		return (0);
 	return (1);
 }
 
@@ -70,14 +71,13 @@ void	*routine(void *philosopher)
 			break ;
 		if (reaching_nbr_of_eating(philo))
 			break ;
-		pthread_mutex_unlock(&philo->fork[philo->r]);
-		pthread_mutex_unlock(&philo->fork[philo->l]);
-		if (philo->if_true == 1 && \
-			philo->number_of_eating == philo->number_time_must_eat)
+		if (!puts_forks(philo))
 			break ;
-		print_msg(philo, 3, philo->l);
+		if (!print_msg(philo, 3, philo->l))
+			break ;
 		usleep(philo->time_to_sleep * 1000);
-		print_msg(philo, 4, philo->l);
+		if (!print_msg(philo, 4, philo->l))
+			break ;
 		usleep(40);
 	}
 	return (NULL);
@@ -118,9 +118,8 @@ int	main(int ac, char **av)
 			i++;
 		}
 		starting_threads(philo, thread);
-		pthread_mutex_lock(&philo[0].main[0]);
+		pthread_mutex_lock(philo->main);
 	}
-	free_philo(philo, thread);
-	// getchar();
+	free_philo(&philo, thread);
 	return (0);
 }
