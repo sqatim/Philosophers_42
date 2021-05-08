@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   affectation.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/07 01:33:07 by ragegodthor       #+#    #+#             */
-/*   Updated: 2021/05/08 04:28:53 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/08 14:45:53 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,24 @@ t_sem	initialisation_semaphore(int number)
 	semaphore.block = sem_open(BLOCK_S, O_CREAT, 0777, 1);
 	semaphore.increment = sem_open(INCREMENT_S, O_CREAT, 0777, 1);
 	return (semaphore);
+}
+
+void	affectation_semaphore(t_philo **philo, t_sem *semaphore, int number)
+{
+	int	i;
+
+	i = 0;
+	while (i < number)
+	{
+		(*philo)[i].fork = semaphore->fork;
+		(*philo)[i].print = semaphore->print;
+		(*philo)[i].main = semaphore->main;
+		(*philo)[i].increment = semaphore->increment;
+		(*philo)[i].block = semaphore->block;
+		sem_unlink(DIE_S);
+		(*philo)[i].die = sem_open(DIE_S, O_CREAT, 0777, 1);
+		if ((*philo)->if_true == 1 && i != 0)
+			(*philo)[i].each_one = (*philo)->each_one;
+		i++;
+	}
 }

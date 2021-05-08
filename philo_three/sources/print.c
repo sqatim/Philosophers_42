@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/07 01:41:13 by ragegodthor       #+#    #+#             */
-/*   Updated: 2021/05/08 05:41:16 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/08 14:57:27 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_three.h"
 
-void	print_error(int error)
+int	print_error(int error)
 {
 	char	*str;
 
@@ -27,7 +27,7 @@ void	print_error(int error)
 	else
 		str = "Error in : Number of time each philosophers must eat\n";
 	printf("%s", str);
-	exit(1);
+	return (0);
 }
 
 int	print_msg(t_philo *philo, int number, int nbr)
@@ -56,7 +56,7 @@ int	print_msg(t_philo *philo, int number, int nbr)
 	return (1);
 }
 
-void	check_arguments(int ac, char **av)
+int	check_arguments(int ac, char **av)
 {
 	int	index;
 
@@ -64,15 +64,16 @@ void	check_arguments(int ac, char **av)
 	if (ac < 5 || ac > 6)
 	{
 		printf("error\n");
-		exit(1);
+		return (0);
 	}
 	else
 	{
 		while (av[index])
 		{
 			if (!check_number(av[index]))
-				print_error(index);
+				return (print_error(index));
 			index++;
 		}
 	}
+	return (1);
 }

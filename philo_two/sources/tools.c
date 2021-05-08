@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tools.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 15:36:57 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/08 04:55:29 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/08 14:45:39 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,20 +43,7 @@ t_philo	*get_args(int ac, char **av, pthread_t **thread, t_sem *semaphore)
 	philo->each_one[0] = 0;
 	*semaphore = initialisation_semaphore(number);
 	i = 0;
-	while (i < number)
-	{
-		philo[i].fork = semaphore->fork;
-		philo[i].print = semaphore->print;
-		philo[i].main = semaphore->main;
-		philo[i].increment = semaphore->increment;
-		philo[i].block = semaphore->block;
-		sem_unlink(DIE_S);
-		philo[i].die = sem_open(DIE_S, O_CREAT, 0777, 1);
-		// printf("adress ==> %p\n",philo[i].die);
-		if (philo->if_true == 1 && i != 0)
-			philo[i].each_one = philo->each_one;
-		i++;
-	}
+	affectation_semaphore(&philo, semaphore, number);
 	return (philo);
 }
 
@@ -82,7 +69,7 @@ int	reaching_nbr_of_eating(t_philo *philo)
 		if (!check_semaphore(philo, philo->increment, 1))
 			return (0);
 		philo->number_of_eating++;
-		if((philo->if_true == 1 && \
+		if ((philo->if_true == 1 && \
 			philo->number_of_eating == philo->number_time_must_eat))
 			philo->reaching = 1;
 		philo->each_one[0]++;

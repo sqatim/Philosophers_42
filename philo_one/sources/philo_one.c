@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_one.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:43:16 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/08 02:43:48 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/08 14:59:16 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,8 @@ int	main(int ac, char **av)
 	struct timeval	starting_t;
 	int				i;
 
-	check_arguments(ac, av);
+	if (!check_arguments(ac, av))
+		return (1);
 	philo = get_args(ac, av, &thread);
 	if (ac == 5 || (ac == 6 && philo->number_time_must_eat != 0))
 	{

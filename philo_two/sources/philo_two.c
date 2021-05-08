@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_two.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:45:55 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/08 05:15:35 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/08 15:01:59 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,10 @@ void	*routine(void *philosopher)
 			break ;
 		if (!puts_forks(philo))
 			break ;
-		if(!print_msg(philo, 3, philo->nbr))
+		if (!print_msg(philo, 3, philo->nbr))
 			break ;
 		usleep(philo->time_to_sleep * 1000);
-		if(!print_msg(philo, 4, philo->nbr))
+		if (!print_msg(philo, 4, philo->nbr))
 			break ;
 		usleep(40);
 	}
@@ -105,7 +105,8 @@ int	main(int ac, char **av)
 	struct timeval	starting_t;
 	int				i;
 
-	check_arguments(ac, av);
+	if (!check_arguments(ac, av))
+		return (1);
 	philo = get_args(ac, av, &thread, &semaphore);
 	if (ac == 5 || (ac == 6 && philo->number_time_must_eat != 0))
 	{

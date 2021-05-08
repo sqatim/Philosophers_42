@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_one.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:40:48 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/08 02:40:25 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/08 14:55:39 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,19 +50,19 @@ int				ft_atoi(const char *str);
 void			free_philo(t_philo **philo, pthread_t *thread);
 long			get_time(long starting_t);
 t_philo			*get_args(int ac, char **av, pthread_t **thread);
-void			check_arguments(int ac, char **av);
+int				check_arguments(int ac, char **av);
 t_philo			*allocation(int ac, char **av, pthread_t **thread);
 void			affectation(int ac, char **av, t_philo **philo);
 t_philo			*initialisation_mutex(t_philo *philo, int number);
 int				check_number(char *str);
-void			print_error(int error);
+int				print_error(int error);
 int				print_msg(t_philo *philo, int number, int x);
 void			starting_threads(t_philo *philo, pthread_t *thread);
 int				reaching_nbr_of_eating(t_philo *philo);
 int				puts_forks(t_philo *philo);
 int				check_mutex(t_philo *philo, pthread_mutex_t *which, \
 				pthread_mutex_t *mutex, int nbr);
-void 			exit_die(t_philo *philo);
+void			exit_die(t_philo *philo);
 int				exit_reach(t_philo *philo);
 
 #endif

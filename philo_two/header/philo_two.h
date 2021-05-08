@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_two.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:41:38 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/08 04:37:38 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/08 15:00:37 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,11 +74,14 @@ int				check_number(char *str);
 int				reaching_nbr_of_eating(t_philo *philo);
 void			affectation(int ac, char **av, t_philo **philo);
 t_sem			initialisation_semaphore(int number);
-void			print_error(int error);
-void			check_arguments(int ac, char **av);
+int				print_error(int error);
+int				check_arguments(int ac, char **av);
 int				print_msg(t_philo *philo, int number, int nbr);
 int				check_semaphore(t_philo *philo, sem_t *semaphore, int nbr);
 int				puts_forks(t_philo *philo);
 void			exit_die(t_philo *philo);
 int				exit_reach(t_philo *philo);
+void			affectation_semaphore(t_philo **philo, \
+					t_sem *semaphore, int number);
+
 #endif

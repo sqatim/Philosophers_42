@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/07 01:35:51 by ragegodthor       #+#    #+#             */
-/*   Updated: 2021/05/08 04:33:10 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/08 15:01:41 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_two.h"
 
-void	print_error(int error)
+int	print_error(int error)
 {
 	char	*str;
 
@@ -27,10 +27,10 @@ void	print_error(int error)
 	else
 		str = "Error in : Number of time each philosophers must eat\n";
 	printf("%s", str);
-	exit(1);
+	return (0);
 }
 
-void	check_arguments(int ac, char **av)
+int	check_arguments(int ac, char **av)
 {
 	int	index;
 
@@ -38,17 +38,18 @@ void	check_arguments(int ac, char **av)
 	if (ac < 5 || ac > 6)
 	{
 		printf("error\n");
-		exit(1);
+		return (0);
 	}
 	else
 	{
 		while (av[index])
 		{
 			if (!check_number(av[index]))
-				print_error(index);
+				return (print_error(index));
 			index++;
 		}
 	}
+	return (1);
 }
 
 int	print_msg(t_philo *philo, int number, int nbr)

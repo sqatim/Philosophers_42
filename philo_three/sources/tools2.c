@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tools2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/08 05:27:50 by ragegodthor       #+#    #+#             */
-/*   Updated: 2021/05/08 06:11:11 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/08 14:31:31 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,7 @@ void	exit_die(t_philo *philo)
 	long	interval;
 
 	if (philo->reaching)
-    {
-        // sem_post(philo->die);
 		return ;
-    }
 	if (!check_semaphore(philo, philo->block, 1))
 		return ;
 	if (!check_semaphore(philo, philo->print, 1))
@@ -78,7 +75,7 @@ int	reaching_nbr_of_eating(t_philo *philo)
 		if (!check_semaphore(philo, philo->increment, 1))
 			return (0);
 		philo->number_of_eating++;
-		if((philo->if_true == 1 && \
+		if ((philo->if_true == 1 && \
 			philo->number_of_eating == philo->number_time_must_eat))
 			philo->reaching = 1;
 		if (!check_semaphore(philo, philo->eat, 2))

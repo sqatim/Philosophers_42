@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tools2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/08 04:09:50 by ragegodthor       #+#    #+#             */
-/*   Updated: 2021/05/08 04:35:32 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/08 14:28:54 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@ void	exit_die(t_philo *philo)
 	long	interval;
 
 	if (philo->reaching)
-    {
-        sem_post(philo->die);
+	{
+		sem_post(philo->die);
 		return ;
-    }
+	}
 	if (!check_semaphore(philo, philo->block, 1))
 		return ;
 	if (!check_semaphore(philo, philo->print, 1))

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tools.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 15:36:57 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/08 06:01:20 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/05/08 14:49:07 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,20 +47,7 @@ t_philo	*get_args(int ac, char **av, t_sem *semaphore)
 	*semaphore = initialisation_semaphore(number, \
 			ac, philo->number_time_must_eat);
 	i = 0;
-	while (i < number)
-	{
-		philo[i].fork = semaphore->fork;
-		philo[i].print = semaphore->print;
-		philo[i].main = semaphore->main;
-		philo[i].eat = semaphore->eat;
-		philo[i].increment = semaphore->increment;
-		philo[i].block = semaphore->block;
-		sem_unlink(DIE_S);
-		philo[i].die = sem_open(DIE_S, O_CREAT, 0777, 1);
-		if (ac == 6 && i != 0)
-			philo[i].each_one = philo->each_one;
-		i++;
-	}
+	affectation_semaphore(&philo, semaphore, number);
 	return (philo);
 }
 
