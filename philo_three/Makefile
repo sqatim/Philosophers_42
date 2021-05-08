@@ -7,11 +7,12 @@ HDR_PATH= header
 OBJ_PATH= objects
 
 SRC_NAME=philo_three.c\
-					ft_atoi.c\
-					tools.c\
-					free.c\
-					affectation.c\
-					print.c\
+		ft_atoi.c\
+		tools.c\
+		free.c\
+		affectation.c\
+		print.c\
+		tools2.c\
 
 HDR_NAME=philo_three.h 
 

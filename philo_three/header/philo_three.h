@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_three.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 14:41:25 by sqatim            #+#    #+#             */
-/*   Updated: 2021/05/07 16:54:51 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/05/08 05:34:49 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@
 # define MAIN_S "/main"
 # define EACH_S "/each"
 # define EAT_S "/eat"
+# define BLOCK_S "/block"
+# define INCREMENT_S "/increment"
 
 typedef struct s_philosopher
 {
@@ -52,6 +54,8 @@ typedef struct s_philosopher
 	sem_t		*die;
 	sem_t		*each;
 	sem_t		*eat;
+	sem_t		*increment;
+	sem_t		*block;
 	pthread_t	die_p;
 }				t_philo;
 
@@ -60,6 +64,8 @@ typedef struct s_semaphore
 	sem_t	*fork;
 	sem_t	*print;
 	sem_t	*main;
+	sem_t	*increment;
+	sem_t	*block;
 	sem_t	*die;
 	sem_t	*each;
 	sem_t	*eat;
@@ -75,7 +81,12 @@ t_philo			*get_args(int ac, char **av, t_sem *semaphore);
 long			get_time(long starting_t);
 void			*ft_reaching(void *philosopher);
 void			print_error(int error);
-void			print_msg(t_philo *philo, int number, int nbr);
+int			print_msg(t_philo *philo, int number, int nbr);
 void			check_arguments(int ac, char **av);
+int				check_semaphore(t_philo *philo, sem_t *semaphore, int nbr);
+int				puts_forks(t_philo *philo);
+void			exit_die(t_philo *philo);
+int				exit_reach(t_philo *philo);
+int				reaching_nbr_of_eating(t_philo *philo);
 
 #endif
